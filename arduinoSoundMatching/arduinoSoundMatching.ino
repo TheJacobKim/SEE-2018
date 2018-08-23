@@ -1,8 +1,8 @@
 #include <ArduinoJson.h>
 
 //This is the pin where the cord is connected to
-#define MAX A0                    // Upper potentiometer
-#define MIN A1                    // Lower potentiometer
+#define MAX 0                    // Upper potentiometer
+#define MIN 1                    // Lower potentiometer
 
 
 // Pin nums
@@ -40,10 +40,6 @@ unsigned long previousMillis = 0; // will store last a new round started
 // Random freq
 int randFreq = 350;
 
-// Input from potentiometer
-int maxVal;
-int minVal;
-
 // Which button is selected
 int buttonNum;
 
@@ -74,8 +70,8 @@ void loop(void) {
   unsigned long currentMillis = millis();
 
   // Potentiometer readings
-  minVal = analogRead(MIN);             //Read upper potentiometer value
-  maxVal = analogRead(MAX);             //Read lower potentiometer value
+  int minVal = analogRead(MIN);             //Read upper potentiometer value
+  int maxVal = analogRead(MAX);             //Read lower potentiometer value
 
   // Button readings  EDGE CASE: people pressing multiple button together
   if (digitalRead(buttonPin0) == HIGH)
@@ -120,28 +116,28 @@ void loop(void) {
   }
 
   // Which sounds to play
-  byte soundByte = B00000000;
+  int soundByte = 0;
   if (minVal < maxVal) {
     // Check if the min and max are in range
     if (minVal < 205)
-      soundByte = soundByte | B00010000;
+      soundByte += 1;
     if (minVal <= 410 && maxVal >= 410)
-      soundByte = soundByte | B00001000;
+      soundByte += 2;
     if (minVal <= 615 && maxVal >= 615)
-      soundByte = soundByte | B00000100;
+      soundByte += 4;
     if (minVal <= 820 && maxVal >= 820)
-      soundByte = soundByte | B00000010;
-    if (maxVal > 1023)
-      soundByte = soundByte | B00000001;
+      soundByte += 8;
+    if (maxVal > 820)
+      soundByte += 16;
   }
 
   // Play the sound with Processing
-  Serial.write(soundByte);
+  Serial.println(soundByte);
 
   // Check if the user got it right
-  int soundInt = soundByte;
+  /*int soundInt = soundByte;
   if (soundByte == buttonNum) {
     digitalWrite(GreenLEDPin, HIGH);
     delay(4000);
-  }
+  }*/
 }

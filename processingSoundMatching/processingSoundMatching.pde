@@ -1,61 +1,78 @@
 import processing.serial.*;
 import processing.sound.*;
-import java.util.Random;
-import java.util.Timer;
+import ddf.minim.*;
+
 
 // Global variables
 Serial myPort;  // Create object from Serial class
-int val = 0;     // Data received from the serial port
+int val;     // Data received from the serial port
 
-// Sound files
-SoundFile file0;
-SoundFile file1;
-SoundFile file2;
-SoundFile file3;
-SoundFile file4;
+// Sound files state
+float RainState = 1;
+float DolphinState = 1;
+float KillerWhaleState = 1;
+float ScubaState = 1;
+float WalrusState = 1;
+
+Minim minim;
+AudioPlayer Rain;
+AudioPlayer Dolphin;
+AudioPlayer KillerWhale;
+AudioPlayer Scuba;
+AudioPlayer Walrus;
+
 
 void setup() {
   // Connect Processing with Arduino
-  String portName = Serial.list()[2]; //For my mac it is 0, windows might me 1 or 2
+  String portName = Serial.list()[0]; //For my mac it is 0, windows might me 1 or 2
   myPort = new Serial(this, portName, 9600);
+  minim = new Minim(this);
 
-  // Load a soundfile from the /data folder
-  file0 = new SoundFile(this, "Rain.mp3");
-  file1 = new SoundFile(this, "Dolphin.mp3");
-  file2 = new SoundFile(this, "KillerWhale.mp3");
-  file3 = new SoundFile(this, "Scuba.mp3");
-  file4 = new SoundFile(this, "Walrus.mp3");
+  Rain = minim.loadFile("Rain.mp3");
+  Dolphin = minim.loadFile("Dolphin.mp3");
+  KillerWhale = minim.loadFile("KillerWhale.mp3");
+  Scuba = minim.loadFile("Scuba.mp3");
+  Walrus = minim.loadFile("Walrus.mp3");
+
+  Rain.loop();
+  Dolphin.loop();
+  KillerWhale.loop();
+  Scuba.loop();
+  Walrus.loop();
 }      
 
 void draw () {
-  println("Current val: " + val);
-  if (val >= 1)
-    file0.loop();
-  else
-    file0.stop();
 
-  if (val >= 2)
-    file1.loop();
-  else
-    file1.stop();
-    
-  if (val >= 4)
-    file2.loop();
-  else
-    file2.stop();
-    
-  if (val >= 8)
-    file3.loop();
-  else
-    file3.stop();
-    
-  if (val >= 16)
-    file4.loop();
-  else
-    file4.stop();
+  if (val >= 1 && Rain.isMuted())         Rain.unmute();
+  else if (val < 1 && !Rain.isMuted())    Rain.mute();
+
+  if (val >= 2 && Dolphin.isMuted())      Dolphin.unmute();
+  else if (val < 2 && !Dolphin.isMuted()) Dolphin.mute();
+
+  if (val >= 4 && KillerWhale.isMuted())  KillerWhale.unmute();
+  else if (val < 4 && !KillerWhale.isMuted())        KillerWhale.mute();
+
+  if (val >= 8 && Scuba.isMuted())        Scuba.unmute();
+  else if (val < 8 && !Scuba.isMuted())              Scuba.mute();
+
+  if (val >= 16 && Walrus.isMuted())      Walrus.unmute();
+  else if (val < 16 && !Walrus.isMuted())             Walrus.mute();
 }
 
 void serialEvent (Serial myPort) {
-  // get the byte
-  val = myPort.read();
+  // get the byte:
+  String inByte = myPort.readStringUntil(10);
+  println("Current val: " + val);
+
+  if (inByte != null) {
+    String valStr = inByte.substring( 0, inByte.length() - 2 );
+    val = int(valStr);
+  }
+
+  /*
+  Rain.setVolume(RainState);
+   Rain.setVolume(DolphinState);
+   Rain.setVolume(KillerWhaleState);
+   Rain.setVolume(ScubaState);
+   Rain.setVolume(WalrusState); */
 }
