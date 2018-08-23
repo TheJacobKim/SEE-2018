@@ -10,12 +10,16 @@ const int buttonPin0 = 0;
 const int buttonPin1 = 1;
 const int buttonPin2 = 2;
 const int buttonPin3 = 3;
-const int LEDPin0 = 4;
-const int LEDPin1 = 5;
-const int LEDPin2 = 6;
-const int LEDPin3 = 7;
-const int GreenLEDPin = 8;
-const int RedLEDPin = 9;
+const int buttonPin4 = 4;
+
+const int LEDPin0 = 5;
+const int LEDPin1 = 6;
+const int LEDPin2 = 7;
+const int LEDPin3 = 8;
+const int LEDPin4 = 9;
+
+const int GreenLEDPin = 10;
+const int RedLEDPin = 11;
 
 // Button states
 int buttonReading0;               // the current reading from the input pin0
@@ -51,12 +55,15 @@ void setup(void) {
   pinMode(buttonPin1, INPUT);
   pinMode(buttonPin2, INPUT);
   pinMode(buttonPin3, INPUT);
+  pinMode(buttonPin4, INPUT);
 
   // LED
   pinMode(LEDPin0, OUTPUT);
   pinMode(LEDPin1, OUTPUT);
   pinMode(LEDPin2, OUTPUT);
   pinMode(LEDPin3, OUTPUT);
+  pinMode(LEDPin4, OUTPUT);
+
   pinMode(GreenLEDPin, OUTPUT);
   pinMode(RedLEDPin, OUTPUT);
 
@@ -72,13 +79,15 @@ void loop(void) {
 
   // Button readings  EDGE CASE: people pressing multiple button together
   if (digitalRead(buttonPin0) == HIGH)
-    buttonNum = 0;
+    buttonNum = 16;
   else if (digitalRead(buttonPin1) == HIGH)
-    buttonNum = 1;
+    buttonNum = 8;
   else if (digitalRead(buttonPin2) == HIGH)
+    buttonNum = 4;
+  else if (digitalRead(buttonPin3) == HIGH)
     buttonNum = 2;
   else if (digitalRead(buttonPin3) == HIGH)
-    buttonNum = 3;
+    buttonNum = 1;
 
   // LED states
   digitalWrite(LEDPin0, LEDState0);
@@ -86,19 +95,22 @@ void loop(void) {
   digitalWrite(LEDPin2, LEDState2);
   digitalWrite(LEDPin3, LEDState3);
 
-  // Start game
+  // Start game THIS DOES NOT WORK WELL
   switch (buttonNum) {
-    case 0:
+    case 16:
       digitalWrite(LEDPin0, HIGH);
       break;
-    case 1:
+    case 8:
       digitalWrite(LEDPin1, HIGH);
       break;
-    case 2:
+    case 4:
       digitalWrite(LEDPin2, HIGH);
       break;
-    case 3:
+    case 2:
       digitalWrite(LEDPin3, HIGH);
+      break;
+    case 1:
+      digitalWrite(LEDPin4, HIGH);
       break;
     default:
       // Button is not pressed
@@ -108,68 +120,28 @@ void loop(void) {
   }
 
   // Which sounds to play
-  byte soundByte = B0000;
+  byte soundByte = B00000000;
   if (minVal < maxVal) {
     // Check if the min and max are in range
-    if (minVal < 5000)
-      soundByte = soundByte | B1000;
-    if (minVal <= 10000 && maxVal >= 10000)
-      soundByte = soundByte | B0100;
-    if (minVal <= 15000 && maxVal >= 15000)
-      soundByte = soundByte | B0100;
-    if (maxVal > 15000)
-      soundByte = soundByte | B0001;
+    if (minVal < 205)
+      soundByte = soundByte | B00010000;
+    if (minVal <= 410 && maxVal >= 410)
+      soundByte = soundByte | B00001000;
+    if (minVal <= 615 && maxVal >= 615)
+      soundByte = soundByte | B00000100;
+    if (minVal <= 820 && maxVal >= 820)
+      soundByte = soundByte | B00000010;
+    if (maxVal > 1023)
+      soundByte = soundByte | B00000001;
   }
 
+  // Play the sound with Processing
   Serial.write(soundByte);
-}
 
-
-
-
-
-
-
-
-
-// During a round
-if (currentMillis - previousMillis <= interval) {
-  // If button is pressed play the reference tone
-  if (buttonReading == HIGH)
-    Serial.println(randFreq);
-  else
-    Serial.println(value);
-}
-
-// After a round is done
-else {
-  // Stop making a noise when a round is done
-  Serial.println(0);
-
-  // Update previous time
-  previousMillis = currentMillis;
-
-  // After the time interval, check if the player got it right.
-  if ((value > randFreq - 40) && (value < randFreq + 40)) {
-    // Green light when the user get it right
-    for (int i = 0; i < 5; i++) {
-      digitalWrite(GreenLEDPin, HIGH);
-      delay(200);
-      digitalWrite(GreenLEDPin, LOW);
-      delay(200);
-    }
-  } else {
-    // Red light when the user get it right
-    for (int i = 0; i < 5; i++) {
-      digitalWrite(RedLEDPin, HIGH);
-      delay(200);
-      digitalWrite(RedLEDPin, LOW);
-      delay(200);
-    }
+  // Check if the user got it right
+  int soundInt = soundByte;
+  if (soundByte == buttonNum) {
+    digitalWrite(GreenLEDPin, HIGH);
+    delay(4000);
   }
-
-  // New round starts with a random freq
-  randFreq = (int)random(100, 600);
 }
-}
-
