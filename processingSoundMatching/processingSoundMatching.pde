@@ -5,7 +5,7 @@ import ddf.minim.*;
 
 // Global variables
 Serial myPort;  // Create object from Serial class
-int val;     // Data received from the serial port
+int val = 31;     // Data received from the serial port
 
 // Sound files state
 float RainState = 1;
@@ -24,7 +24,7 @@ AudioPlayer Walrus;
 
 void setup() {
   // Connect Processing with Arduino
-  String portName = Serial.list()[0]; //For my mac it is 0, windows might me 1 or 2
+  String portName = Serial.list()[4]; //For my mac it is 0, windows might me 1 or 2
   myPort = new Serial(this, portName, 9600);
   minim = new Minim(this);
 
@@ -41,7 +41,7 @@ void setup() {
   Walrus.loop();
 }      
 
-void draw () {
+void draw() {
 
   if (val >= 1 && Rain.isMuted())         Rain.unmute();
   else if (val < 1 && !Rain.isMuted())    Rain.mute();
@@ -59,7 +59,7 @@ void draw () {
   else if (val < 16 && !Walrus.isMuted())             Walrus.mute();
 }
 
-void serialEvent (Serial myPort) {
+void serialEvent(Serial myPort) {
   // get the byte:
   String inByte = myPort.readStringUntil(10);
   println("Current val: " + val);
