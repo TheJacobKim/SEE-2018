@@ -124,17 +124,17 @@ void loop(void) {
 
   // Which sounds to play
   int soundByte = 0;
-  if (minVal < maxVal) {
+  if (minVal < maxVal) { // This does not represent current proportions
     // Check if the min and max are in range
-    if (minVal < 205)
+    if (minVal < 128 && maxVal >= 128)
       soundByte += 1;
-    if (minVal <= 410 && maxVal >= 410)
+    if (minVal < 396 && maxVal >= 396)
       soundByte += 2;
-    if (minVal <= 615 && maxVal >= 615)
+    if (minVal < 518 && maxVal >= 518)
       soundByte += 4;
-    if (minVal <= 820 && maxVal >= 820)
+    if (minVal < 945 && maxVal >= 945)
       soundByte += 8;
-    if (maxVal > 820)
+    if (maxVal > 945)
       soundByte += 16;
   }
 
@@ -145,7 +145,6 @@ void loop(void) {
   if (soundByte == buttonNum) {
     digitalWrite(GreenLEDPin, HIGH);
     digitalWrite(RedLEDPin, LOW);
-    delay(2000);
   } else {
     digitalWrite(GreenLEDPin, LOW);
     digitalWrite(RedLEDPin, HIGH);
