@@ -32,15 +32,15 @@ void setup() {
   // create our Minim object for loading audio
   minim = new Minim(this);
 
-  RightWhale = new FilePlayer( minim.loadFileStream("NORM__3,200-5,300Hz North Atlantic Right Whale.mp3"));
-  KillerWhale = new FilePlayer( minim.loadFileStream("NORM__5,301-9,000Hz False Killer Whale.mp3"));
-  HumpbackWhale = new FilePlayer( minim.loadFileStream("NORM__9,001-11,000Hz Humpback Whale Song.mp3"));
-  Narwhals = new FilePlayer( minim.loadFileStream("NORM__18,000-20,000Hz Narwhals.mp3"));
+  RightWhale = new FilePlayer( minim.loadFileStream("3,200-5,300Hz North Atlantic Right Whale.mp3"));
+  KillerWhale = new FilePlayer( minim.loadFileStream("5,301-9,000Hz False Killer Whale.mp3"));
+  HumpbackWhale = new FilePlayer( minim.loadFileStream("9,001-11,000Hz Humpback Whale Song.mp3"));
+  Narwhals = new FilePlayer( minim.loadFileStream("18,000-20,000Hz Narwhals.mp3"));
   Dolphin = new FilePlayer( minim.loadFileStream("18,000-20,000Hz Pantropical Spotted Dolphin.mp3"));
-  CargoVessel = new FilePlayer( minim.loadFileStream("NORM__Propeller Sound of a Cargo Vessel.mp3"));
-  Slowdown = new FilePlayer( minim.loadFileStream("NORM__Slowdown.mp3"));
-  Train = new FilePlayer( minim.loadFileStream("NORM__Train.mp3"));
-  Whistle = new FilePlayer( minim.loadFileStream("NORM__Whistle.mp3"));
+  CargoVessel = new FilePlayer( minim.loadFileStream("Propeller Sound of a Cargo Vessel.mp3"));
+  Slowdown = new FilePlayer( minim.loadFileStream("Slowdown.mp3"));
+  Train = new FilePlayer( minim.loadFileStream("Train.mp3"));
+  Whistle = new FilePlayer( minim.loadFileStream("Whistle.mp3"));
 
   RightWhale.loop();
   KillerWhale.loop();
