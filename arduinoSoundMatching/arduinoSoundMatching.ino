@@ -34,6 +34,7 @@ unsigned long previousMillis = 0; // will store last a new round started
 int buttonNum;
 
 void setup(void) {
+
   Serial.begin(9600);
 
   // Buttons
@@ -62,13 +63,13 @@ void loop(void) {
   // Potentiometer readings
   int minVal = analogRead(MIN);             //Read upper potentiometer value
   int maxVal = analogRead(MAX);             //Read lower potentiometer value
-/*
-  Serial.print("Min: ");
-  Serial.println(minVal);
-  Serial.print("Max: ");
-  Serial.println(maxVal);
-  delay(500);
-*/
+  /*
+    Serial.print("Min: ");
+    Serial.println(minVal);
+    Serial.print("Max: ");
+    Serial.println(maxVal);
+    delay(500);
+  */
   // Button readings  EDGE CASE: people pressing multiple button together
   if (digitalRead(buttonPin0) == HIGH)
     buttonNum = 16;
