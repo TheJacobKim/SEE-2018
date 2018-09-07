@@ -1,13 +1,13 @@
 #include <FatReader.h>
 #include <SdReader.h>
 #include <avr/pgmspace.h>
-#include "WaveUtil.h"
-#include "WaveHC.h"
+#include <WaveUtil.h>
+#include <WaveHC.h>
 #include <FastLED.h>
 
 //This is the pin where the cord is connected to
-#define MAX 0     // Upper potentiometer
-#define MIN 1     // Lower potentiometer
+#define MAX A0     // Upper potentiometer
+#define MIN A1     // Lower potentiometer
 
 SdReader card;    // This object holds the information for the card
 FatVolume vol;    // This holds the information for the partition on the card
@@ -29,23 +29,24 @@ WaveHC wave7;
 // LED Strip
 #define LED_PIN 7   //LED strip Pin
 #define NUM_LEDS 25 //# of pixels
+CRGB leds[NUM_LEDS];
 
 // audioFiles to play
 const char * files[] = {
-  "Garibaldi",
-  "MantisShrimp",
-  "SeaUrchin",
-  "FalseKillerWhale",
-  "HumpbackWhale",
-  "CargoVessel",
-  "Slowdown",
-  "Whistle"
+  "A.wav",
+  "B.wav",
+  "C.wav",
+  "D.wav",
+  "E.wav",
+  "F.wav",
+  "G.wav",
+  "H.wav"
 };
 #define fileNum (sizeof (files) / sizeof (const char *))
 
 // here is where we define the buttons that we'll use. button "1" is the first, button "6" is the 6th, etc
-byte buttons[] = {14, 15, 16, 17, 18, 19};
-byte leds[] = {20, 21, 22, 23, 24, 25};
+byte buttons[] = {14, 15, 16, 17, 18};
+byte buttonLEDS[] = {19, 20, 21, 22, 23};
 int ledStates[] = {LOW, LOW, LOW, LOW, LOW};
 
 // This handy macro lets us determine how big the array up above is, by checking the size
@@ -57,8 +58,8 @@ volatile byte pressed[NUMBUTTONS], justpressed[NUMBUTTONS], justreleased[NUMBUTT
 uint8_t dirLevel; // indent level for file/dir names (for prettyprinting)
 dir_t dirBuf;     // buffer for directory reads
 
-const int GreenLEDPin = 12;
-const int RedLEDPin = 13;
+//const int GreenLEDPin = 12;
+//const int RedLEDPin = 13;
 
 // Which button is selected
 int buttonNum;
@@ -105,15 +106,15 @@ void setup(void) {
   pinMode(5, OUTPUT);
 
   // pin13 LED strip
-  pinMode(13, OUTPUT);
+  //pinMode(13, OUTPUT);
 
   // Make input & enable pull-up resistors on switch pins and leds
   for (i = 0; i < NUMBUTTONS; i++) {
     pinMode(buttons[i], INPUT);
     digitalWrite(buttons[i], HIGH);
 
-    pinMode(leds[i + NUMBUTTONS], OUTPUT);
-    digitalWrite(leds[i + NUMBUTTONS], HIGH);
+    pinMode(buttonLEDS[i + NUMBUTTONS], OUTPUT);
+    digitalWrite(buttonLEDS[i + NUMBUTTONS], HIGH);
   }
 
   if (!card.init()) {         //play with 8 MHz spi (default faster!)
@@ -150,12 +151,14 @@ void setup(void) {
 
   /* Load all files
       I am ashamed of this piece of code, but I could not create an array of WaveHC object.
+      WaveHC waves[8] = {wave0, wave1, ...} <- did not work
       Actually WaveHC object does not make sense sicne C is not object oriented.
       How it works? Magic!
+      OK apparently Arduino is a mix of C++ and C, that's why there is an object
   */
-  if (!f.open(root, *files[0])) {       // Open FILENAME in root dir to FAT reader
+  if (!f.open(root, "A.wav")) {        // Open FILENAME in root dir to FAT reader
     putstring("Couldn't open file ");
-    Serial.print(*files[0]);
+    Serial.print(files[0]);
     return;
   }
   if (!wave0.create(f)) {               // Create WAVE object with FAT reader opened above
@@ -163,9 +166,9 @@ void setup(void) {
     return;
   }
 
-  if (!f.open(root, *files[1])) {
+  if (!f.open(root, "B.wav")) {
     putstring("Couldn't open file ");
-    Serial.print(*files[1]);
+    Serial.print(files[1]);
     return;
   }
   if (!wave1.create(f)) {
@@ -173,9 +176,9 @@ void setup(void) {
     return;
   }
 
-  if (!f.open(root, *files[2])) {
+  if (!f.open(root, "C.wav")) {
     putstring("Couldn't open file ");
-    Serial.print(*files[2]);
+    Serial.print(files[2]);
     return;
   }
   if (!wave2.create(f)) {
@@ -183,9 +186,9 @@ void setup(void) {
     return;
   }
 
-  if (!f.open(root, *files[3])) {
+  if (!f.open(root, "D.wav")) {
     putstring("Couldn't open file ");
-    Serial.print(*files[3]);
+    Serial.print(files[3]);
     return;
   }
   if (!wave3.create(f)) {
@@ -193,9 +196,9 @@ void setup(void) {
     return;
   }
 
-  if (!f.open(root, *files[4])) {
+  if (!f.open(root, "E.wav")) {
     putstring("Couldn't open file ");
-    Serial.print(*files[4]);
+    Serial.print(files[4]);
     return;
   }
   if (!wave4.create(f)) {
@@ -203,9 +206,9 @@ void setup(void) {
     return;
   }
 
-  if (!f.open(root, *files[5])) {
+  if (!f.open(root, "F.wav")) {
     putstring("Couldn't open file ");
-    Serial.print(*files[5]);
+    Serial.print(files[5]);
     return;
   }
   if (!wave5.create(f)) {
@@ -213,9 +216,9 @@ void setup(void) {
     return;
   }
 
-  if (!f.open(root, *files[6])) {
+  if (!f.open(root, "G.wav")) {
     putstring("Couldn't open file ");
-    Serial.print(*files[i]);
+    Serial.print(files[i]);
     return;
   }
   if (!wave6.create(f)) {
@@ -223,9 +226,9 @@ void setup(void) {
     return;
   }
 
-  if (!f.open(root, *files[7])) {
+  if (!f.open(root, "H.wav")) {
     putstring("Couldn't open file ");
-    Serial.print(*files[7]);
+    Serial.print(files[7]);
     return;
   }
   if (!wave7.create(f)) {
@@ -287,19 +290,20 @@ void check_switches()
 // Main part of the code
 void loop(void) {
   byte i;
-  unsigned long currentMillis = millis();
 
   // Potentiometer readings
   int minVal = analogRead(MIN);             //Read upper potentiometer value
   int maxVal = analogRead(MAX);             //Read lower potentiometer value
 
-  Serial.println();
-  Serial.print("Min: ");
-  Serial.println(minVal);
-  Serial.print("Max: ");
-  Serial.println(maxVal);
-  delay(500);
-
+  /*
+     For debugging
+    Serial.println();
+    Serial.print("Min: ");
+    Serial.println(minVal);
+    Serial.print("Max: ");
+    Serial.println(maxVal);
+    Serial.println();
+  */
 
   // Make all ledStates low
   for (i = 0; i < NUMBUTTONS; i++) {
@@ -337,7 +341,7 @@ void loop(void) {
   // Apply all ledStates
   byte j = 0;
   for (j = 0; j < NUMBUTTONS; j++) {
-    digitalWrite(leds[j], ledStates[j]);
+    digitalWrite(buttonLEDS[j], ledStates[j]);
   }
 
   // Which sounds to play
@@ -355,6 +359,10 @@ void loop(void) {
     if (maxVal > 945)
       soundByte += 16;
   }
+
+  Serial.print("soundByte: ");
+  Serial.println(soundByte);
+  delay(500);
 
   // Play the sound according to soundByte
   if ((soundByte & 1) == 1 && !wave0.isplaying)        wave0.play();
@@ -384,12 +392,19 @@ void loop(void) {
   }
 
   // Check if the user got it right
-  if (soundByte == buttonNum) {
-    digitalWrite(GreenLEDPin, HIGH);
-    digitalWrite(RedLEDPin, LOW);
-  } else {
-    digitalWrite(GreenLEDPin, LOW);
-    digitalWrite(RedLEDPin, HIGH);
-  }
+  /*
+    if (soundByte == buttonNum) {
+    for (int i = 0; i <= NUM_LEDS; i++) {
+      leds[i] = CRGB(0, 255, 0);
+      FastLED.show();
+      delay(5);
+    }
+    } else {
+    for (int i = 0; i <= NUM_LEDS; i++) {
+      leds[i] = CRGB(255, 0, 0);
+      FastLED.show();
+      delay(5);
+    }
+    }*/
 }
 
