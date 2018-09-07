@@ -9,74 +9,69 @@ String binary;
 int val;
 
 Minim minim;
-AudioPlayer RightWhale;
-AudioPlayer KillerWhale;
-AudioPlayer HumpbackWhale;
-AudioPlayer Narwhals;
-AudioPlayer Dolphin;
-AudioPlayer CargoVessel;
-AudioPlayer Slowdown;
-AudioPlayer Train;
-AudioPlayer Whistle;
+AudioPlayer FishA;
+AudioPlayer FishB;
+AudioPlayer FishC;
+AudioPlayer FishD;
+AudioPlayer FishE;
+AudioPlayer NoiseA;
+AudioPlayer NoiseB;
+AudioPlayer NoiseC;
 
 
 void setup() {
   // Connect Processing with Arduino
-
   String portName = Serial.list()[4]; //For my mac it is 0, windows might me 1 or 2
   myPort = new Serial(this, portName, 9600);
   minim = new Minim(this);
 
-  RightWhale = minim.loadFile("3,200-5,300Hz North Atlantic Right Whale.mp3");
-  KillerWhale = minim.loadFile("5,301-9,000Hz False Killer Whale.mp3");
-  HumpbackWhale = minim.loadFile("9,001-11,000Hz Humpback Whale Song.mp3");
-  Narwhals = minim.loadFile("18,000-20,000Hz Narwhals.mp3");
-  Dolphin = minim.loadFile("18,000-20,000Hz Pantropical Spotted Dolphin.mp3");
-  CargoVessel = minim.loadFile("Propeller Sound of a Cargo Vessel.mp3");
-  Slowdown = minim.loadFile("Slowdown.mp3");
-  Train = minim.loadFile("Train.mp3");
-  Whistle = minim.loadFile("Whistle.mp3");
+  // Set AudioPlayer objects
+  FishA = minim.loadFile("A.wav");
+  FishB = minim.loadFile("B.wav");
+  FishC = minim.loadFile("C.wav");
+  FishD = minim.loadFile("D.wav");
+  FishE = minim.loadFile("E.wav");
+  NoiseA = minim.loadFile("F.wav");
+  NoiseB = minim.loadFile("G.wav");
+  NoiseC = minim.loadFile("H.wav");
 
-  RightWhale.loop();
- // KillerWhale.loop();
-  HumpbackWhale.loop();
-  //Narwhals.loop();
-  Dolphin.loop();
-  CargoVessel.loop();
-  Slowdown.loop();
-  Train.loop();
-  Whistle.loop();
+  FishA.loop();
+  FishB.loop();
+  FishC.loop();
+  FishD.loop();
+  FishE.loop();
+  NoiseA.loop();
+  NoiseB.loop();
+  NoiseC.loop();
 }      
 
 void draw() {
 
-  if ((val & 1) == 1 && RightWhale.isMuted())         RightWhale.unmute();
-  else if ((val & 1) != 1 && !RightWhale.isMuted())   RightWhale.mute();
+  if ((val & 1) == 1 && FishA.isMuted())         FishA.unmute();
+  else if ((val & 1) != 1 && !FishA.isMuted())   FishA.mute();
 
-  
-  if ((val & 2) == 2 && KillerWhale.isMuted())        KillerWhale.unmute();
-   else if ((val & 2) != 2 && !KillerWhale.isMuted())  KillerWhale.mute();
-  
-  if ((val & 4) == 4  && HumpbackWhale.isMuted())      HumpbackWhale.unmute();
-  else if ((val & 4) != 4 && !HumpbackWhale.isMuted()) HumpbackWhale.mute();
-  
-  if ((val & 8) == 8 && Narwhals.isMuted())           Narwhals.unmute();
-   else if ((val & 8) != 8 && !Narwhals.isMuted())     Narwhals.mute();
-  
-  if ((val & 16) == 16 && Dolphin.isMuted())          Dolphin.unmute();
-  else if ((val & 16) != 16 && !Dolphin.isMuted())    Dolphin.mute();
+
+  if ((val & 2) == 2 && FishB.isMuted())         FishB.unmute();
+  else if ((val & 2) != 2 && !FishB.isMuted())   FishB.mute();
+
+  if ((val & 4) == 4  && FishC.isMuted())        FishD.unmute();
+  else if ((val & 4) != 4 && !FishC.isMuted())   FishD.mute();
+
+  if ((val & 8) == 8 && FishD.isMuted())         FishD.unmute();
+  else if ((val & 8) != 8 && !FishD.isMuted())   FishD.mute();
+
+  if ((val & 16) == 16 && FishE.isMuted())       FishE.unmute();
+  else if ((val & 16) != 16 && !FishE.isMuted()) FishE.mute();
 
   // If a specific section is selected, mute other noise
   if (val == 0 || val == 1 || val == 2 || val == 4 || val == 8 || val == 16) {
-    CargoVessel.mute();
-    Slowdown.mute();
-    Train.mute();
-    Whistle.mute();
+    NoiseA.mute();
+    NoiseB.mute();
+    NoiseC.mute();
   } else {
-    CargoVessel.unmute();
-    Slowdown.unmute();
-    Train.unmute();
-    Whistle.unmute();
+    NoiseA.unmute();
+    NoiseB.unmute();
+    NoiseC.unmute();
   }
 }
 
