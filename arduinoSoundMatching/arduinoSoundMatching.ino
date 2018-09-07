@@ -41,7 +41,7 @@ const char * files[] = {
   "F.wav",
   "G.wav",
   "H.wav"
-};
+}; // Files are named in alphabets so it could be replaced easily
 #define fileNum (sizeof (files) / sizeof (const char *))
 
 // here is where we define the buttons that we'll use. button "1" is the first, button "6" is the 6th, etc
@@ -235,6 +235,24 @@ void setup(void) {
     putstring_nl("Not a valid WAV");
     return;
   }
+  wave0.play();
+  wave1.play();
+  wave2.play();
+  wave3.play();
+  wave4.play();
+  wave5.play();
+  wave6.play();
+  wave7.play();
+
+  wave0.pause();
+  wave1.pause();
+  wave2.pause();
+  wave3.pause();
+  wave4.pause();
+  wave5.pause();
+  wave6.pause();
+  wave7.pause();
+
   /* Finshied Loading files */
 
   // Whew! We got past the tough parts.
@@ -365,30 +383,30 @@ void loop(void) {
   delay(500);
 
   // Play the sound according to soundByte
-  if ((soundByte & 1) == 1 && !wave0.isplaying)        wave0.play();
-  else if ((soundByte & 1) != 1 && wave0.isplaying)    wave0.stop();
+  if (soundByte == 1 && wave0.isPaused())           wave0.resume();
+  else if (soundByte != 1 && !wave0.isPaused())    wave0.pause();
 
-  if ((soundByte & 2) == 2 && !wave1.isplaying)        wave1.play();
-  else if ((soundByte & 2) != 2 && wave1.isplaying)    wave1.stop();
+  if (soundByte == 2 && wave1.isPaused())           wave1.resume();
+  else if (soundByte != 2 && !wave1.isPaused())    wave1.pause();
 
-  if ((soundByte & 4) == 4  && !wave2.isplaying)       wave2.play();
-  else if ((soundByte & 4) != 4 && wave2.isplaying)    wave2.stop();
+  if (soundByte == 4  && wave2.isPaused())          wave2.resume();
+  else if (soundByte != 4 && wave2.isPaused())     wave2.pause();
 
-  if ((soundByte & 8) == 8 && !wave3.isplaying)        wave3.play();
-  else if ((soundByte & 8) != 8 && wave3.isplaying)    wave3.stop();
+  if (soundByte == 8 && wave3.isPaused())           wave3.resume();
+  else if (soundByte != 8 && wave3.isPaused())     wave3.pause();
 
-  if ((soundByte & 16) == 16 && !wave4.isplaying)      wave4.play();
-  else if ((soundByte & 16) != 16 && wave4.isplaying)  wave4.stop();
+  if (soundByte == 16 && wave4.isPaused())          wave4.resume();
+  else if (soundByte != 16 && wave4.isPaused())    wave4.pause();
 
   // If a specific section is selected, mute other noise
   if (soundByte == 0 || soundByte == 1 || soundByte == 2 || soundByte == 4 || soundByte == 8 || soundByte == 16) {
-    wave5.stop();
-    wave6.stop();
-    wave7.stop();
+    wave5.resume();
+    wave6.resume();
+    wave7.resume();
   } else {
-    wave5.play();
-    wave6.play();
-    wave7.play();
+    wave5.pause();
+    wave6.pause();
+    wave7.pause();
   }
 
   // Check if the user got it right
