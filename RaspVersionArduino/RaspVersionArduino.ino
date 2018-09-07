@@ -12,30 +12,13 @@ CRGB leds[NUM_LEDS];
 
 
 // Pin nums
-const int buttonPin0 = 2;
-const int buttonPin1 = 3;
-const int buttonPin2 = 4;
-const int buttonPin3 = 5;
-const int buttonPin4 = 6;
-
-const int LEDPin0 = 7;
-const int LEDPin1 = 8;
-const int LEDPin2 = 9;
-const int LEDPin3 = 10;
-const int LEDPin4 = 11;
+int buttonPins[] = {2, 3, 4, 5, 6};
+byte buttonStates[] = {LOW, LOW, LOW, LOW, LOW};
+byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
+int LEDpins[] = {7, 8, 9, 10, 11};
 
 const int GreenLEDPin = 12;
 const int RedLEDPin = 13;
-
-// LED states
-byte LEDState0 = LOW;
-byte LEDState1 = LOW;
-byte LEDState2 = LOW;
-byte LEDState3 = LOW;
-byte LEDState4 = LOW;
-
-// Time vars
-unsigned long previousMillis = 0; // will store last a new round started
 
 // Which button is selected
 int buttonNum;
@@ -44,22 +27,11 @@ void setup(void) {
 
   Serial.begin(9600);
 
-  // Buttons
-  pinMode(buttonPin0, INPUT);
-  pinMode(buttonPin1, INPUT);
-  pinMode(buttonPin2, INPUT);
-  pinMode(buttonPin3, INPUT);
-  pinMode(buttonPin4, INPUT);
-
-  // LED
-  pinMode(LEDPin0, OUTPUT);
-  pinMode(LEDPin1, OUTPUT);
-  pinMode(LEDPin2, OUTPUT);
-  pinMode(LEDPin3, OUTPUT);
-  pinMode(LEDPin4, OUTPUT);
-
-  pinMode(GreenLEDPin, OUTPUT);
-  pinMode(RedLEDPin, OUTPUT);
+  // Buttons and LEDs
+  for (int i = 0; i < 5; i++) {
+    pinMode(buttonPins[i], INPUT);
+    pinMode(LEDpins[i], OUTPUT);
+  }
 
   FastLED.addLeds<NEOPIXEL, LEDSTRIP_PIN>(leds, NUM_LEDS);
 }
@@ -69,66 +41,23 @@ void loop(void) {
   int i;
 
   // Potentiometer readings
-  int minVal = analogRead(MIN);             //Read upper potentiometer value
+  int minVal = 0;                           //Read upper potentiometer value
+  //int minVal = analogRead(MIN);           //Read upper potentiometer value
   int maxVal = analogRead(MAX);             //Read lower potentiometer value
-  /*
-    Serial.print("Min: ");
-    Serial.println(minVal);
-    Serial.print("Max: ");
-    Serial.println(maxVal);
-    delay(500);
-  */
-  // Button readings  EDGE CASE: people pressing multiple button together
-  if (digitalRead(buttonPin0) == HIGH)
-    buttonNum = 16;
-  else if (digitalRead(buttonPin1) == HIGH)
-    buttonNum = 8;
-  else if (digitalRead(buttonPin2) == HIGH)
-    buttonNum = 4;
-  else if (digitalRead(buttonPin3) == HIGH)
-    buttonNum = 2;
-  else if (digitalRead(buttonPin4) == HIGH)
-    buttonNum = 1;
+
+
+  for (int i = 0; i < 5; i++) {
+    if (testButtonState(buttonPins[i], i, digitalRead(buttonPins[i]))) {
+      lightLED(i);
+      buttonNum = pow(2,i); // This is used to determine if the user isolated to the correct sound.
+    }
+  }
 
   /*
     Serial.print("buttonNum: ");
     Serial.println(buttonNum);
     delay(2000);
   */
-
-  LEDState0 = LOW;
-  LEDState1 = LOW;
-  LEDState2 = LOW;
-  LEDState3 = LOW;
-  LEDState4 = LOW;
-
-  // Start game THIS DOES NOT WORK WELL
-  switch (buttonNum) {
-    case 16:
-      LEDState0 = HIGH;
-      break;
-    case 8:
-      LEDState1 = HIGH;
-      break;
-    case 4:
-      LEDState2 = HIGH;
-      break;
-    case 2:
-      LEDState3 = HIGH;
-      break;
-    case 1:
-      LEDState4 = HIGH;
-      break;
-    default:
-      break; // Button is not pressed
-  }
-
-  // LED states
-  digitalWrite(LEDPin0, LEDState0);
-  digitalWrite(LEDPin1, LEDState1);
-  digitalWrite(LEDPin2, LEDState2);
-  digitalWrite(LEDPin3, LEDState3);
-  digitalWrite(LEDPin4, LEDState4);
 
   // Which sounds to play
   int soundByte = 0;
@@ -149,7 +78,7 @@ void loop(void) {
   // Play the sound with Processing
   Serial.println(soundByte);
 
-  // Check if the user got it right
+  // Check if the user got it right by LED strip
   if (soundByte == buttonNum) {
     for ( i = 0; i < NUM_LEDS; i++ ) {
       leds[i] = CRGB::Green;
@@ -160,7 +89,36 @@ void loop(void) {
     for ( i = 0; i < NUM_LEDS; i++ ) {
       leds[i] = CRGB::Red;
       FastLED.show();
-      delay(300);
+      delay(10);
     }
   }
 }
+
+// Test which button is pressed
+boolean testButtonState(int buttonPin, int buttonStateN, byte buttonNewState) {
+  if (buttonStates[buttonStateN] != buttonNewState) {
+    buttonStates[buttonStateN] = buttonNewState;
+    Serial.print(buttonPin);
+    Serial.println(" pressed.");
+    if (buttonNewState == LOW) {
+      Serial.print(buttonPin);
+      Serial.println(" up.");
+      return true;
+    }
+  }
+  return false;
+}
+
+// Light up LEDs according to that
+void lightLED(int ledPin) {
+  for (int n = 0; n < 5; n++) {
+    LEDstates[n] = LOW;
+  }
+  LEDstates[ledPin] = HIGH;
+
+  for (int i = 0; i < 5; i++) {
+    digitalWrite(LEDpins[i], LEDstates[i]);
+  }
+}
+
+
