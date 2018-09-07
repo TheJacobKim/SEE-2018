@@ -7,8 +7,8 @@
 CRGB leds[NUM_LEDS];
 
 //This is the pin where the cord is connected to
-#define MAX 0                    // Upper potentiometer
-#define MIN 1                    // Lower potentiometer
+#define MAX A0                    // Upper potentiometer
+#define MIN A1                    // Lower potentiometer
 
 
 // Pin nums
@@ -41,14 +41,14 @@ void loop(void) {
   int i;
 
   // Potentiometer readings
-  int minVal = analogRead(MIN);           //Read upper potentiometer value
+  //int minVal = analogRead(MIN);           //Read upper potentiometer value
+  int minVal = 0;           //Read upper potentiometer value
   int maxVal = analogRead(MAX);             //Read lower potentiometer value
-
 
   for (int i = 0; i < 5; i++) {
     if (testButtonState(buttonPins[i], i, digitalRead(buttonPins[i]))) {
       lightLED(i);
-      buttonNum = pow(2,i); // This is used to determine if the user isolated to the correct sound.
+      buttonNum = pow(2, i); // This is used to determine if the user isolated to the correct sound.
     }
   }
 
@@ -97,11 +97,7 @@ void loop(void) {
 boolean testButtonState(int buttonPin, int buttonStateN, byte buttonNewState) {
   if (buttonStates[buttonStateN] != buttonNewState) {
     buttonStates[buttonStateN] = buttonNewState;
-    Serial.print(buttonPin);
-    Serial.println(" pressed.");
     if (buttonNewState == LOW) {
-      Serial.print(buttonPin);
-      Serial.println(" up.");
       return true;
     }
   }
