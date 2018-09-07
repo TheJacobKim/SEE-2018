@@ -45,8 +45,8 @@ const char * files[] = {
 #define fileNum (sizeof (files) / sizeof (const char *))
 
 // here is where we define the buttons that we'll use. button "1" is the first, button "6" is the 6th, etc
-byte buttons[] = {14, 15, 16, 17, 18};
-byte buttonLEDS[] = {19, 20, 21, 22, 23};
+byte buttons[] = {22, 23, 24, 25, 26};
+byte buttonLEDS[] = {27, 28, 29, 30, 31};
 int ledStates[] = {LOW, LOW, LOW, LOW, LOW};
 
 // This handy macro lets us determine how big the array up above is, by checking the size
@@ -155,6 +155,8 @@ void setup(void) {
       Actually WaveHC object does not make sense sicne C is not object oriented.
       How it works? Magic!
       OK apparently Arduino is a mix of C++ and C, that's why there is an object
+
+      Also I am using string literal "A.wav" instead of files[0] because it gives me an error.
   */
   if (!f.open(root, "A.wav")) {        // Open FILENAME in root dir to FAT reader
     putstring("Couldn't open file ");
@@ -218,7 +220,7 @@ void setup(void) {
 
   if (!f.open(root, "G.wav")) {
     putstring("Couldn't open file ");
-    Serial.print(files[i]);
+    Serial.print(files[6]);
     return;
   }
   if (!wave6.create(f)) {
@@ -243,15 +245,6 @@ void setup(void) {
   wave5.play();
   wave6.play();
   wave7.play();
-
-  wave0.pause();
-  wave1.pause();
-  wave2.pause();
-  wave3.pause();
-  wave4.pause();
-  wave5.pause();
-  wave6.pause();
-  wave7.pause();
 
   /* Finshied Loading files */
 
@@ -314,52 +307,61 @@ void loop(void) {
   int maxVal = analogRead(MAX);             //Read lower potentiometer value
 
   /*
-     For debugging
-    Serial.println();
-    Serial.print("Min: ");
-    Serial.println(minVal);
-    Serial.print("Max: ");
-    Serial.println(maxVal);
-    Serial.println();
-  */
+     For debugging */
+  Serial.println();
+  Serial.print("Min: ");
+  Serial.println(minVal);
+  Serial.print("Max: ");
+  Serial.println(maxVal);
+  Serial.println();
+  delay(1000);
 
   // Make all ledStates low
-  for (i = 0; i < NUMBUTTONS; i++) {
-    ledStates[i] = LOW;
-  }
-
+  int toggle = 0;
   // Check buttons
   if (pressed[0]) {
     buttonNum = 16;
     ledStates[0] = HIGH;
+    toggle = 0;
   }
   else if (pressed[1]) {
     buttonNum = 8;
     ledStates[1] = HIGH;
+    toggle = 1;
   }
   else if (pressed[2]) {
     buttonNum = 4;
     ledStates[2] = HIGH;
+    toggle = 2;
   }
   else if (pressed[3]) {
     buttonNum = 2;
     ledStates[3] = HIGH;
+    toggle = 3;
   }
   else if (pressed[4]) {
     buttonNum = 1;
     ledStates[4] = HIGH;
+    toggle = 4;
+  }
+
+  // Make all LED states low except for the toggle LED
+  for (i = 0; i < 5; i++) {
+    if ( i != toggle ) {
+      ledStates[i] = LOW;
+    }
   }
 
   /*
+   * Debug button
     Serial.print("buttonNum: ");
     Serial.println(buttonNum);
     delay(2000);
   */
 
-  // Apply all ledStates
-  byte j = 0;
-  for (j = 0; j < NUMBUTTONS; j++) {
-    digitalWrite(buttonLEDS[j], ledStates[j]);
+  // Apply all ledStates and turn on or off leds
+  for (i = 0; i < NUMBUTTONS; i++) {
+    digitalWrite(buttonLEDS[i], ledStates[i]);
   }
 
   // Which sounds to play
@@ -380,37 +382,103 @@ void loop(void) {
 
   Serial.print("soundByte: ");
   Serial.println(soundByte);
-  delay(500);
+  //delay(500);
 
   // Play the sound according to soundByte
-  if (soundByte == 1 && wave0.isPaused())           wave0.resume();
-  else if (soundByte != 1 && !wave0.isPaused())    wave0.pause();
 
-  if (soundByte == 2 && wave1.isPaused())           wave1.resume();
-  else if (soundByte != 2 && !wave1.isPaused())    wave1.pause();
+  if (soundByte == 1 && wave0.volume == 0)           wave0.volume = 50; // I could not find default volume level, so I set it to this arbitrary number 50.
+  else if (soundByte != 1 && wave0.volume == 50)     wave0.volume = 0;
 
-  if (soundByte == 4  && wave2.isPaused())          wave2.resume();
-  else if (soundByte != 4 && wave2.isPaused())     wave2.pause();
+  if (soundByte == 2 && wave1.volume == 0)           wave1.volume = 50;
+  else if (soundByte != 2 && wave1.volume == 50)     wave1.volume = 0;
 
-  if (soundByte == 8 && wave3.isPaused())           wave3.resume();
-  else if (soundByte != 8 && wave3.isPaused())     wave3.pause();
+  if (soundByte == 4  && wave2.volume == 0)          wave2.volume = 50;
+  else if (soundByte != 4 && wave2.volume == 50)     wave2.volume = 0;
 
-  if (soundByte == 16 && wave4.isPaused())          wave4.resume();
-  else if (soundByte != 16 && wave4.isPaused())    wave4.pause();
+  if (soundByte == 8 && wave3.volume == 0)           wave3.volume = 50;
+  else if (soundByte != 8 && wave3.volume == 50)     wave3.volume = 0;
+
+  if (soundByte == 16 && wave4.volume == 0)          wave4.volume = 50;
+  else if (soundByte != 16 && wave4.volume == 50)    wave4.volume = 0;
 
   // If a specific section is selected, mute other noise
   if (soundByte == 0 || soundByte == 1 || soundByte == 2 || soundByte == 4 || soundByte == 8 || soundByte == 16) {
+    wave5.volume = 50;
+    wave6.volume = 50;
+    wave7.volume = 50;
+  } else {
+    wave5.volume = 0;
+    wave6.volume = 0;
+    wave7.volume = 0;
+  }
+
+  /* Long wall of if statements to check if any sound file stopped playing
+      If any of the file stopped playing, re-play that sound
+  */
+  if (!wave0.isplaying) {
+    if (!f.open(root, "A.wav")) {        // Open FILENAME in root dir to FAT reader
+      putstring("Couldn't open file ");
+      Serial.print(files[0]);
+      return;
+    }
+    if (!wave0.create(f)) {               // Create WAVE object with FAT reader opened above
+      putstring_nl("Not a valid WAV");
+      return;
+    }
+    wave0.play();
+  }
+  if (!wave1.isplaying) {
+    if (!f.open(root, "B.wav")) {        // Open FILENAME in root dir to FAT reader
+      putstring("Couldn't open file ");
+      Serial.print(files[1]);
+      return;
+    }
+    if (!wave1.create(f)) {               // Create WAVE object with FAT reader opened above
+      putstring_nl("Not a valid WAV");
+      return;
+    }
+    wave1.play();
+  }
+  if (!wave2.isplaying) wave2.play();
+  if (!wave3.isplaying) wave3.play();
+  if (!wave4.isplaying) wave4.play();
+  if (!wave5.isplaying) wave5.play();
+  if (!wave6.isplaying) wave6.play();
+  if (!wave7.isplaying) wave7.play();
+
+  /*
+     This code uses pause & resume instead of volume
+    if (soundByte == 1 && wave0.isPaused())           wave0.resume();
+    else if (soundByte != 1 && !wave0.isPaused())     wave0.pause();
+
+    if (soundByte == 2 && wave1.isPaused())           wave1.resume();
+    else if (soundByte != 2 && !wave1.isPaused())     wave1.pause();
+
+    if (soundByte == 4  && wave2.isPaused())          wave2.resume();
+    else if (soundByte != 4 && !wave2.isPaused())     wave2.pause();
+
+    if (soundByte == 8 && wave3.isPaused())           wave3.resume();
+    else if (soundByte != 8 && !wave3.isPaused())     wave3.pause();
+
+    if (soundByte == 16 && wave4.isPaused())          wave4.resume();
+    else if (soundByte != 16 && !wave4.isPaused())    wave4.pause();
+
+    // If a specific section is selected, mute other noise
+    if (soundByte == 0 || soundByte == 1 || soundByte == 2 || soundByte == 4 || soundByte == 8 || soundByte == 16) {
     wave5.resume();
     wave6.resume();
     wave7.resume();
-  } else {
+    } else {
     wave5.pause();
     wave6.pause();
     wave7.pause();
-  }
+    }
+  */
 
   // Check if the user got it right
   /*
+     This part is commented out since I don't have the proto board yet.
+     Which means no button input nor led strips
     if (soundByte == buttonNum) {
     for (int i = 0; i <= NUM_LEDS; i++) {
       leds[i] = CRGB(0, 255, 0);
@@ -425,4 +493,5 @@ void loop(void) {
     }
     }*/
 }
+
 
