@@ -1,7 +1,7 @@
 #include <FastLED.h>
 
 // LED strip
-#define NUM_LEDS 60
+#define NUM_LEDS 23
 #define LEDSTRIP_PIN 6
 
 CRGB leds[NUM_LEDS];
@@ -41,8 +41,7 @@ void loop(void) {
   int i;
 
   // Potentiometer readings
-  int minVal = 0;                           //Read upper potentiometer value
-  //int minVal = analogRead(MIN);           //Read upper potentiometer value
+  int minVal = analogRead(MIN);           //Read upper potentiometer value
   int maxVal = analogRead(MAX);             //Read lower potentiometer value
 
 
