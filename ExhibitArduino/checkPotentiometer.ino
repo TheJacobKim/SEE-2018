@@ -28,6 +28,7 @@
  */
 int checkPotentiometer(int minVal, int maxVal) {
   int soundByte = 0;
+
   if (minVal < maxVal) {
     // Check if the min and max are in range
     if (minVal < 128 && maxVal >= 128)

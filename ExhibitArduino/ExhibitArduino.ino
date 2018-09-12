@@ -5,7 +5,6 @@
    Date: Sept 11, 2018
 */
 
-#include <Metro.h>
 #include <wavTrigger.h>
 #include <FastLED.h>
 
@@ -25,12 +24,14 @@ wavTrigger wTrig;
 int buttonPins[] = {2, 3, 4, 5, 6};
 int LEDpins[] = {7, 8, 9, 10, 11};
 
+boolean LEDon = false;
+
 // variable for reading the pushbutton & LED status
 volatile byte buttonStates[] = {LOW, LOW, LOW, LOW, LOW};
 volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 
 // Keeps track of which button is selected
-int buttonNum;
+int buttonNum = 1;
 
 /*
    Function Name: setup()
@@ -50,6 +51,10 @@ int buttonNum;
 void setup() {
   // Serial monitor
   Serial.begin(9600);
+  Serial.println("Beginning Exhibit Arguino v1.0");
+  Serial.println("------------------------------");
+  Serial.println("");
+  
 
   // If the Arduino is powering the WAV Trigger, we should wait for the WAV
   //  Trigger to finish reset before trying to send commands.
@@ -64,8 +69,11 @@ void setup() {
   wTrig.stopAllTracks();
   wTrig.samplerateOffset(0);
 
+  Serial.print("Number of tracks available: ");
+  Serial.println(wTrig.getNumTracks());
+
   // Make sure sound files loop without pause
-  for (int i = 1; i <= 8; i++) {
+  for (int i = 1; i <= wTrig.getNumTracks(); i++) {
     wTrig.trackLoop(i, true);
     wTrig.trackPlayPoly(i);
   }
@@ -94,7 +102,7 @@ void setup() {
 */
 void loop() {
   // Which sounds to play
-  int soundByte = checkPotentiometer(analogRead(MIN), analogRead(MAX));
+  int soundByte = checkPotentiometer(analogRead(MIN), (analogRead(MIN)+100)); //CHANGE THIS ONCE YOU HAVE THE SECOND POT
 
   // Call update on the WAV Trigger to keep the track playing status current.
   wTrig.update();
