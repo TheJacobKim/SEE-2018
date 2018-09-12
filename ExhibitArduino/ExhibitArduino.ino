@@ -41,6 +41,7 @@ int buttonNum;
                 3. Set all the tracks to loop forever
                 4. Setup button and LED pins
                 5. Setup LED strip
+                6. Check IDLE
    Parameters: None
    Side Effects: None
    Error Conditions: None
