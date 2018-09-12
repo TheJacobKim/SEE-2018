@@ -1,3 +1,10 @@
+/*
+ * Filename: ExhibitArduino.ino
+ * Author: Jacob Kim
+ * Description: The main file for Wave Exhibit from SEE-2018.
+ * Date: Sept 11, 2018
+ */
+
 #include <Metro.h>
 #include <wavTrigger.h>
 #include <FastLED.h>
@@ -7,23 +14,39 @@
 #define LEDSTRIP_PIN 6
 CRGB leds[NUM_LEDS];
 
-//This is the pin where the cord is connected to
-#define MAX A0                    // Upper potentiometer
-#define MIN A1                    // Lower potentiometer
+// Potentiometers
+#define MAX A0
+#define MIN A1
 
-wavTrigger wTrig;                 // Our WAV Trigger object
-
+// Our WAV Trigger object
+wavTrigger wTrig;      
+           
 // Pin nums
 int buttonPins[] = {2, 3, 4, 5, 6};
-byte buttonStates[] = {LOW, LOW, LOW, LOW, LOW};
-byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 int LEDpins[] = {7, 8, 9, 10, 11};
 
-// Which button is selected
+// variable for reading the pushbutton & LED status
+volatile byte buttonStates[] = {LOW, LOW, LOW, LOW, LOW};
+volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
+
+// Keeps track of which button is selected
 int buttonNum;
 
+/*
+ * Function Name: setup()
+ * Function Prototype: void setup();
+ * Description: Default function required to initialize Arduino.
+ *              1. Setup Serial connection (9600)
+ *              2. Start WAV Trigger
+ *              3. Set all the tracks to loop forever
+ *              4. Setup button and LED pins
+ *              5. Setup LED strip
+ * Parameters: None
+ * Side Effects: None
+ * Error Conditions: None
+ * Return Value: None
+ */
 void setup() {
-  
   // Serial monitor
   Serial.begin(9600);
 
@@ -42,18 +65,32 @@ void setup() {
 
   // Make sure sound files loop without pause
   for (int i = 1; i <= 8; i++) {
-    wTrig.tackLoop(i, true);
+    wTrig.trackLoop(i, true);
+    wTrig.trackPlayPoly(i);
   }
-
+  
   // Buttons and LEDs
   for (int i = 0; i < 5; i++) {
     pinMode(buttonPins[i], INPUT);
+
+    // Attach interrupts() for the button pins' accuracy.
+    attachInterrupt(digitalPinToInterrupt(buttonPins[i]), buttonPressed, CHANGE);
+    
     pinMode(LEDpins[i], OUTPUT);
   }
 
   FastLED.addLeds<NEOPIXEL, LEDSTRIP_PIN>(leds, NUM_LEDS);
 }
 
+/*
+ * Function Name: loop()
+ * Function Prototype: void loop();
+ * Description: The main driver of this program
+ * Parameters: None
+ * Side Effects: 
+ * Error Conditions: None
+ * Return Value: None
+ */
 void loop() {
   // Which sounds to play
   int soundByte = checkPotentiometer(analogRead(MIN), analogRead(MAX));
@@ -61,46 +98,9 @@ void loop() {
   // Call update on the WAV Trigger to keep the track playing status current.
   wTrig.update();
 
-  // Figure out button states
-  for (int i = 0; i < 5; i++) {
-    if (testButtonState(buttonPins[i], i, digitalRead(buttonPins[i]))) {
-      lightLED(i);
-      buttonNum = pow(2, i); // This is used to determine if the user isolated to the correct sound.
-    }
-  }
-
   // Play sounds accordingly
   playSound(soundByte);
-
-
 }
 
-
-// Test which button is pressed
-boolean testButtonState(int buttonPin, int buttonStateN, byte buttonNewState) {
-  if (buttonStates[buttonStateN] != buttonNewState) {
-    Serial.print(buttonPin);
-    Serial.println(" is changed");
-    buttonStates[buttonStateN] = buttonNewState;
-    if (buttonNewState == LOW) {
-      Serial.print(buttonPin);
-      Serial.println(" is up");
-      return true;
-    }
-  }
-  return false;
-}
-
-// Light up LEDs according to that
-void lightLED(int ledPin) {
-  for (int n = 0; n < 5; n++) {
-    LEDstates[n] = LOW;
-  }
-  LEDstates[ledPin] = HIGH;
-
-  for (int i = 0; i < 5; i++) {
-    digitalWrite(LEDpins[i], LEDstates[i]);
-  }
-}
 
 
