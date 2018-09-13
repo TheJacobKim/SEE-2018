@@ -9,10 +9,6 @@
 */
 
 void checkResult(int soundByte) {
-  Serial.print("Sound Byte: ");
-  Serial.println(soundByte);
-  Serial.print("Button Number: ");
-  Serial.println(buttonNum);
   if (soundByte == buttonNum) {
     if(!LEDon)
     {

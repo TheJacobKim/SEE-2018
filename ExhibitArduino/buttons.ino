@@ -19,7 +19,7 @@
 void buttonPressed() {
   // Figure out button states
   for (int i = 0; i < 5; i++) {
-    if (testButtonState(buttonPins[i], i, digitalRead(buttonPins[i]))) {
+    if (digitalRead(buttonPins[i]) == HIGH) {
       lightLED(i);
       buttonNum = pow(2, i); // This is used to determine if the user isolated to the correct sound.
     }
@@ -62,6 +62,9 @@ boolean testButtonState(int buttonPin, int buttonStateN, byte buttonNewState) {
    Return Value: None
 */
 void lightLED(int ledPin) {
+  Serial.print("LIGHT UP ");
+  Serial.println(ledPin + 1);
+  
   for (int n = 0; n < 5; n++) {
     LEDstates[n] = LOW;
   }

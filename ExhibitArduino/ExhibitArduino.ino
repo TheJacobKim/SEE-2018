@@ -21,8 +21,8 @@ CRGB leds[NUM_LEDS];
 wavTrigger wTrig;
 
 // Pin nums
-int buttonPins[] = {2, 3, 4, 5, 6};
-int LEDpins[] = {7, 8, 9, 10, 11};
+int buttonPins[] = {2, 3, 18, 19, 20};
+int LEDpins[] = {43, 41, 39, 37, 35};
 
 boolean LEDon = false;
 
@@ -31,7 +31,7 @@ volatile byte buttonStates[] = {LOW, LOW, LOW, LOW, LOW};
 volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 
 // Keeps track of which button is selected
-int buttonNum = 1;
+int buttonNum;
 
 /*
    Function Name: setup()
@@ -80,14 +80,16 @@ void setup() {
 
   // Buttons and LEDs
   for (int i = 0; i < 5; i++) {
-    pinMode(buttonPins[i], INPUT);
+    pinMode(buttonPins[i], INPUT_PULLUP);
 
     // Attach interrupts() for the button pins' accuracy.
-    attachInterrupt(digitalPinToInterrupt(buttonPins[i]), buttonPressed, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(buttonPins[i]), buttonPressed, FALLING);
 
     pinMode(LEDpins[i], OUTPUT);
   }
 
+  digitalWrite(LEDpins[0], HIGH);
+  buttonNum = 0;
   FastLED.addLeds<NEOPIXEL, LEDSTRIP_PIN>(leds, NUM_LEDS);
 }
 
