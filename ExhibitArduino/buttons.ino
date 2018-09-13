@@ -17,38 +17,38 @@
    Return Value: None
 */
 void button0Pressed() {
-  if ((long)(millis() - last_micros) >= debouncing_time) { // Multiply 1000 since this is micro
-    last_micros = millis();
+  if ((long)(millis() - last_millis) >= debouncing_time) {
+    last_millis = millis();
     Serial.println("Button 0 is changed");
-    lightLED(buttonPins[0]);
+    lightLED(LEDpins[0]);
   }
 }
 void button1Pressed() {
-  if ((long)(millis() - last_micros) >= debouncing_time) {
-    last_micros = millis();
+  if ((long)(millis() - last_millis) >= debouncing_time) {
+    last_millis = millis();
     Serial.println("Button 1 is changed");
-    lightLED(buttonPins[1]);
+    lightLED(LEDpins[1]);
   }
 }
 void button2Pressed() {
-  if ((long)(millis() - last_micros) >= debouncing_time) {
-    last_micros = millis();
+  if ((long)(millis() - last_millis) >= debouncing_time) {
+    last_millis = millis();
     Serial.println("Button 2 is changed");
-    lightLED(buttonPins[2]);
+    lightLED(LEDpins[2]);
   }
 }
 void button3Pressed() {
-  if ((long)(millis() - last_micros) >= debouncing_time) {
-    last_micros = micros();
+  if ((long)(millis() - last_millis) >= debouncing_time) {
+    last_millis = millis();
     Serial.println("millis 3 is changed");
-    lightLED(buttonPins[3]);
+    lightLED(LEDpins[3]);
   }
 }
 void button4Pressed() {
-  if ((long)(millis() - last_micros) >= debouncing_time) {
-    last_micros = millis();
+  if ((long)(millis() - last_millis) >= debouncing_time) {
+    last_millis = millis();
     Serial.println("Button 4 is changed");
-    lightLED(buttonPins[4]);
+    lightLED(LEDpins[4]);
   }
 }
 

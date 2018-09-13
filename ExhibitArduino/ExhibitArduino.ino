@@ -33,9 +33,8 @@ volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 // Keeps track of which button is selected
 int buttonNum;
 
-boolean buttonFlag = false;
 long debouncing_time = 15;            //Debouncing Time in Milliseconds
-volatile unsigned long last_micros;
+volatile unsigned long last_millis;
 
 /*
    Function Name: setup()
@@ -123,7 +122,3 @@ void loop() {
   // Check result and turn led strip green or red
   checkResult(soundByte);
 }
-
-
-
-
