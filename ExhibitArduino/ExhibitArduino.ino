@@ -33,8 +33,12 @@ volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 // Keeps track of which button is selected
 int buttonNum;
 
-long debouncing_time = 15;            //Debouncing Time in Milliseconds
-volatile unsigned long last_millis;
+long debounceDelay = 15;            //Debouncing Time in Milliseconds
+volatile unsigned long lastDebounceTime;
+int buttonFlag = -1;
+
+// Calculate idle time
+long lastTime = millis();
 
 /*
    Function Name: setup()
@@ -54,10 +58,10 @@ volatile unsigned long last_millis;
 void setup() {
   // Serial monitor
   Serial.begin(9600);
-  Serial.println("Beginning Exhibit Arguino v1.0");
+  Serial.println("Beginning Exhibit Arduino v1.0");
   Serial.println("------------------------------");
   Serial.println("");
-  
+
 
   // If the Arduino is powering the WAV Trigger, we should wait for the WAV
   //  Trigger to finish reset before trying to send commands.
@@ -84,16 +88,16 @@ void setup() {
   // Buttons and LEDs
   for (int i = 0; i < 5; i++) {
     pinMode(buttonPins[i], INPUT_PULLUP);
-
-    // Attach interrupts() for the button pins' accuracy.
-    attachInterrupt(digitalPinToInterrupt(buttonPins[0]), button0Pressed, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(buttonPins[1]), button1Pressed, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(buttonPins[2]), button2Pressed, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(buttonPins[3]), button3Pressed, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(buttonPins[4]), button4Pressed, CHANGE);
-
     pinMode(LEDpins[i], OUTPUT);
   }
+
+  // Button interrupt
+  attachInterrupt(digitalPinToInterrupt(buttonPins[0]), button0Pressed, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[1]), button1Pressed, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[2]), button2Pressed, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[3]), button3Pressed, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[4]), button4Pressed, CHANGE);
+
 
   digitalWrite(LEDpins[0], HIGH);
   buttonNum = 0;
@@ -111,10 +115,38 @@ void setup() {
 */
 void loop() {
   // Which sounds to play
-  int soundByte = checkPotentiometer(analogRead(MIN), (analogRead(MIN)+100)); //CHANGE THIS ONCE YOU HAVE THE SECOND POT
+  int soundByte = checkPotentiometer(analogRead(MIN), (analogRead(MAX))); //CHANGE THIS ONCE YOU HAVE THE SECOND POT
 
   // Call update on the WAV Trigger to keep the track playing status current.
   wTrig.update();
+
+  switch (buttonFlag) {
+    case 0:
+      Serial.println("button 0 pushed");
+      lightLED(0);
+      buttonFlag = -1;
+      break;
+    case 1:
+      Serial.println("button 1 pushed");
+      lightLED(1);
+      buttonFlag = -1;
+      break;
+    case 2:
+      Serial.println("button 2 pushed");
+      lightLED(2);
+      buttonFlag = -1;
+      break;
+    case 3:
+      Serial.println("button 3 pushed");
+      lightLED(3);
+      buttonFlag = -1;
+      break;
+    case 4:
+      Serial.println("button 4 pushed");
+      lightLED(4);
+      buttonFlag = -1;
+      break;
+  }
 
   // Play sounds accordingly
   playSound(soundByte);

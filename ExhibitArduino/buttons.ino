@@ -17,67 +17,50 @@
    Return Value: None
 */
 void button0Pressed() {
-  if ((long)(millis() - last_millis) >= debouncing_time) {
-    last_millis = millis();
-    Serial.println("Button 0 is changed");
-    lightLED(LEDpins[0]);
+  //software debounce
+  static unsigned long last_time0 = 0;
+  unsigned long this_time = millis();
+  if (this_time - last_time0 > 100) {
+    buttonFlag = 0;
   }
+  last_time0 = this_time;
 }
 void button1Pressed() {
-  if ((long)(millis() - last_millis) >= debouncing_time) {
-    last_millis = millis();
-    Serial.println("Button 1 is changed");
-    lightLED(LEDpins[1]);
+  //software debounce
+  static unsigned long last_time1 = 0;
+  unsigned long this_time = millis();
+  if (this_time - last_time1 > 100) {
+    buttonFlag = 1;
   }
+  last_time1 = this_time;
 }
 void button2Pressed() {
-  if ((long)(millis() - last_millis) >= debouncing_time) {
-    last_millis = millis();
-    Serial.println("Button 2 is changed");
-    lightLED(LEDpins[2]);
+  //software debounce
+  static unsigned long last_time2 = 0;
+  unsigned long this_time = millis();
+  if (this_time - last_time2 > 100) {
+    buttonFlag = 2;
   }
+  last_time2 = this_time;
 }
 void button3Pressed() {
-  if ((long)(millis() - last_millis) >= debouncing_time) {
-    last_millis = millis();
-    Serial.println("millis 3 is changed");
-    lightLED(LEDpins[3]);
+  //software debounce
+  static unsigned long last_time3 = 0;
+  unsigned long this_time = millis();
+  if (this_time - last_time3 > 100) {
+    buttonFlag = 3;
   }
+  last_time3 = this_time;
 }
 void button4Pressed() {
-  if ((long)(millis() - last_millis) >= debouncing_time) {
-    last_millis = millis();
-    Serial.println("Button 4 is changed");
-    lightLED(LEDpins[4]);
+  //software debounce
+  static unsigned long last_time4 = 0;
+  unsigned long this_time = millis();
+  if (this_time - last_time4 > 100) {
+    buttonFlag = 4;
   }
+  last_time4 = this_time;
 }
-
-
-/*
-   Function Name: testButtonState()
-   Function Prototype: boolean testButtonState(int buttonPin, int buttonStateN, byte buttonNewState);
-   Description: Check button states and lights up correct LED.
-   Parameters: buttonPin - button pin to check
-               buttonStateN -
-               buttonNewState -
-   Side Effects: buttonStates[] array value changes accordingly
-   Error Conditions: None
-   Return Value: boolean value to determine if a button's state has been changed.
-*/
-boolean testButtonState(int buttonPin, int buttonStateN, byte buttonNewState) {
-  if (buttonStates[buttonStateN] != buttonNewState) {
-    Serial.print(buttonPin);
-    Serial.println(" is changed");
-    buttonStates[buttonStateN] = buttonNewState;
-    if (buttonNewState == LOW) {
-      Serial.print(buttonPin);
-      Serial.println(" is up");
-      return true;
-    }
-  }
-  return false;
-}
-
 
 /*
    Function Name: lightLED()
@@ -89,7 +72,7 @@ boolean testButtonState(int buttonPin, int buttonStateN, byte buttonNewState) {
 */
 void lightLED(int ledPin) {
   Serial.print("LIGHT UP ");
-  Serial.println(ledPin + 1);
+  Serial.println(ledPin);
 
   for (int n = 0; n < 5; n++) {
     LEDstates[n] = LOW;
