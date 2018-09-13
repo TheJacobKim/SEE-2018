@@ -7,8 +7,8 @@
 
 
 /*
-   Function Name: buttonPressed()
-   Function Prototype: void buttonPressed();
+   Function Name: button#Pressed()
+   Function Prototype: void button#Pressed();
    Description: This function is part of interrupts() in Arduino.
                 If any buttons' state change, this function gets called.
    Parameters: None
@@ -16,13 +16,39 @@
    Error Conditions: None
    Return Value: None
 */
-void buttonPressed() {
-  // Figure out button states
-  for (int i = 0; i < 5; i++) {
-    if (digitalRead(buttonPins[i]) == HIGH) {
-      lightLED(i);
-      buttonNum = pow(2, i); // This is used to determine if the user isolated to the correct sound.
-    }
+void button0Pressed() {
+  if ((long)(millis() - last_micros) >= debouncing_time) { // Multiply 1000 since this is micro
+    last_micros = millis();
+    Serial.println("Button 0 is changed");
+    lightLED(buttonPins[0]);
+  }
+}
+void button1Pressed() {
+  if ((long)(millis() - last_micros) >= debouncing_time) {
+    last_micros = millis();
+    Serial.println("Button 1 is changed");
+    lightLED(buttonPins[1]);
+  }
+}
+void button2Pressed() {
+  if ((long)(millis() - last_micros) >= debouncing_time) {
+    last_micros = millis();
+    Serial.println("Button 2 is changed");
+    lightLED(buttonPins[2]);
+  }
+}
+void button3Pressed() {
+  if ((long)(millis() - last_micros) >= debouncing_time) {
+    last_micros = micros();
+    Serial.println("millis 3 is changed");
+    lightLED(buttonPins[3]);
+  }
+}
+void button4Pressed() {
+  if ((long)(millis() - last_micros) >= debouncing_time) {
+    last_micros = millis();
+    Serial.println("Button 4 is changed");
+    lightLED(buttonPins[4]);
   }
 }
 
@@ -64,7 +90,7 @@ boolean testButtonState(int buttonPin, int buttonStateN, byte buttonNewState) {
 void lightLED(int ledPin) {
   Serial.print("LIGHT UP ");
   Serial.println(ledPin + 1);
-  
+
   for (int n = 0; n < 5; n++) {
     LEDstates[n] = LOW;
   }

@@ -33,6 +33,10 @@ volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 // Keeps track of which button is selected
 int buttonNum;
 
+boolean buttonFlag = false;
+long debouncing_time = 15;            //Debouncing Time in Milliseconds
+volatile unsigned long last_micros;
+
 /*
    Function Name: setup()
    Function Prototype: void setup();
@@ -83,7 +87,11 @@ void setup() {
     pinMode(buttonPins[i], INPUT_PULLUP);
 
     // Attach interrupts() for the button pins' accuracy.
-    attachInterrupt(digitalPinToInterrupt(buttonPins[i]), buttonPressed, FALLING);
+    attachInterrupt(digitalPinToInterrupt(buttonPins[0]), button0Pressed, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(buttonPins[1]), button1Pressed, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(buttonPins[2]), button2Pressed, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(buttonPins[3]), button3Pressed, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(buttonPins[4]), button4Pressed, CHANGE);
 
     pinMode(LEDpins[i], OUTPUT);
   }
