@@ -21,7 +21,7 @@ CRGB leds[NUM_LEDS];
 wavTrigger wTrig;
 
 // Pin nums
-int buttonPins[] = {2, 3, 21, 19, 20};
+int buttonPins[] = {2, 3, 18, 19, 20};
 int LEDpins[] = {43, 41, 39, 37, 35};
 
 boolean LEDon = true;
