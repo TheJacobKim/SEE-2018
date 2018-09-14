@@ -75,7 +75,9 @@ void lightLED(int ledPin) {
     for (int i = 0; i < 5; i++) {
       digitalWrite(LEDpins[i], LOW);
     }
-  } else {
+  } 
+  
+  else {
     Serial.print("LIGHT UP ");
     Serial.println(ledPin);
 
