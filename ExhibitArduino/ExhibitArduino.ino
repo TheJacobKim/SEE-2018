@@ -100,11 +100,11 @@ void setup() {
   }
 
   // Button interrupt
-  attachInterrupt(digitalPinToInterrupt(buttonPins[0]), button0Pressed, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(buttonPins[1]), button1Pressed, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(buttonPins[2]), button2Pressed, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(buttonPins[3]), button3Pressed, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(buttonPins[4]), button4Pressed, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[0]), button0Pressed, FALLING);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[1]), button1Pressed, FALLING);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[2]), button2Pressed, FALLING);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[3]), button3Pressed, FALLING);
+  attachInterrupt(digitalPinToInterrupt(buttonPins[4]), button4Pressed, FALLING);
 
 
   digitalWrite(LEDpins[0], HIGH);

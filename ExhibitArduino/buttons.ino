@@ -74,6 +74,7 @@ void lightLED(int ledPin) {
   if (idle) {
     for (int i = 0; i < 5; i++) {
       digitalWrite(LEDpins[i], LOW);
+      delay(1);
     }
   } 
   
@@ -88,6 +89,7 @@ void lightLED(int ledPin) {
 
     for (int i = 0; i < 5; i++) {
       digitalWrite(LEDpins[i], LEDstates[i]);
+      delay(1);
     }
   }
 }
