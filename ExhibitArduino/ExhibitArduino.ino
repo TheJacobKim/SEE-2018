@@ -10,7 +10,7 @@
 
 // LED strip
 #define NUM_LEDS 40
-#define LEDSTRIP_PIN 6
+#define LEDSTRIP_PIN 8
 CRGB leds[NUM_LEDS];
 
 // Potentiometers
@@ -22,7 +22,7 @@ wavTrigger wTrig;
 
 // Pin nums
 int buttonPins[] = {2, 3, 18, 19, 20};
-int LEDpins[] = {43, 41, 39, 37, 35};
+int LEDpins[] = {44, 46, 48, 50, 52};
 
 boolean LEDon = true;
 
