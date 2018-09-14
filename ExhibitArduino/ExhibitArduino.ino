@@ -32,6 +32,7 @@ volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 
 // Keeps track of which button is selected
 int buttonNum = -1;
+int lastButtonNum = buttonNum;
 long debounceDelay = 15;            //Debouncing Time in Milliseconds
 volatile unsigned long lastDebounceTime;
 int buttonFlag = -1;
