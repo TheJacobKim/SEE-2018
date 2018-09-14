@@ -9,7 +9,7 @@
 #include <FastLED.h>
 
 // LED strip
-#define NUM_LEDS 23
+#define NUM_LEDS 40
 #define LEDSTRIP_PIN 6
 CRGB leds[NUM_LEDS];
 
@@ -21,24 +21,31 @@ CRGB leds[NUM_LEDS];
 wavTrigger wTrig;
 
 // Pin nums
-int buttonPins[] = {2, 3, 18, 19, 20};
+int buttonPins[] = {2, 3, 21, 19, 20};
 int LEDpins[] = {43, 41, 39, 37, 35};
 
-boolean LEDon = false;
+boolean LEDon = true;
 
 // variable for reading the pushbutton & LED status
 volatile byte buttonStates[] = {LOW, LOW, LOW, LOW, LOW};
 volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 
 // Keeps track of which button is selected
-int buttonNum;
-
+int buttonNum = -1;
 long debounceDelay = 15;            //Debouncing Time in Milliseconds
 volatile unsigned long lastDebounceTime;
 int buttonFlag = -1;
 
 // Calculate idle time
 long lastTime = millis();
+long idleTime = 120000;  // Two minutes in milliseconds
+boolean idle = false;
+
+// Potentiometer reading
+volatile int minReading;
+volatile int maxReading;
+volatile int lastMaxReading;
+volatile int lastMinReading;
 
 /*
    Function Name: setup()
@@ -100,7 +107,6 @@ void setup() {
 
 
   digitalWrite(LEDpins[0], HIGH);
-  buttonNum = 0;
   FastLED.addLeds<NEOPIXEL, LEDSTRIP_PIN>(leds, NUM_LEDS);
 }
 
@@ -115,7 +121,9 @@ void setup() {
 */
 void loop() {
   // Which sounds to play
-  int soundByte = checkPotentiometer(analogRead(MIN), (analogRead(MAX))); //CHANGE THIS ONCE YOU HAVE THE SECOND POT
+  minReading = analogRead(MIN);
+  maxReading = analogRead(MAX);
+  int soundByte = checkPotentiometer(minReading, maxReading); //CHANGE THIS ONCE YOU HAVE THE SECOND POT
 
   // Call update on the WAV Trigger to keep the track playing status current.
   wTrig.update();
@@ -150,7 +158,13 @@ void loop() {
 
   // Play sounds accordingly
   playSound(soundByte);
-
+/*  Serial.print("soundByte: ");
+  Serial.println(soundByte);
+  Serial.print("buttonNum: ");
+  Serial.println(buttonNum);
+*/
   // Check result and turn led strip green or red
   checkResult(soundByte);
+
+  //checkIdle();
 }

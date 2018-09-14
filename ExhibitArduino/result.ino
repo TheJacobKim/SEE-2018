@@ -9,26 +9,33 @@
 */
 
 void checkResult(int soundByte) {
-  if (soundByte == buttonNum) {
-    if(!LEDon)
-    {
-      Serial.println("LED to Green");
-      for ( int i = 0; i < NUM_LEDS; i++ ) {
-        leds[i] = CRGB::Green;
-      }    
-      FastLED.show();
-      delay(500);
-      LEDon = true;
+  if (idle) {
+    Serial.println("LED Off");
+    for ( int i = 0; i < NUM_LEDS; i++ ) {
+      leds[i] = CRGB::Black;
     }
-  } else {
-    if(LEDon)
-    {
-      Serial.print("LED to Red");
-      for ( int i = 0; i < NUM_LEDS; i++ ) {
-        leds[i] = CRGB::Red;
-      }  
-      FastLED.show();
-      LEDon = false;  
+    FastLED.show();
+  }
+  else {
+    if (soundByte == buttonNum) {
+      if (!LEDon) {
+        Serial.println("LED to Green");
+        for ( int i = 0; i < NUM_LEDS; i++ ) {
+          leds[i] = CRGB::Green;
+        }
+        FastLED.show();
+        delay(500);
+        LEDon = true;
+      }
+    } else {
+      if (LEDon) {
+        Serial.print("LED to Red");
+        for ( int i = 0; i < NUM_LEDS; i++ ) {
+          leds[i] = CRGB::Red;
+        }
+        FastLED.show();
+        LEDon = false;
+      }
     }
   }
 }

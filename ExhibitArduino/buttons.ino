@@ -71,15 +71,21 @@ void button4Pressed() {
    Return Value: None
 */
 void lightLED(int ledPin) {
-  Serial.print("LIGHT UP ");
-  Serial.println(ledPin);
+  if (idle) {
+    for (int i = 0; i < 5; i++) {
+      digitalWrite(LEDpins[i], LOW);
+    }
+  } else {
+    Serial.print("LIGHT UP ");
+    Serial.println(ledPin);
 
-  for (int n = 0; n < 5; n++) {
-    LEDstates[n] = LOW;
-  }
-  LEDstates[ledPin] = HIGH;
+    for (int n = 0; n < 5; n++) {
+      LEDstates[n] = LOW;
+    }
+    LEDstates[ledPin] = HIGH;
 
-  for (int i = 0; i < 5; i++) {
-    digitalWrite(LEDpins[i], LEDstates[i]);
+    for (int i = 0; i < 5; i++) {
+      digitalWrite(LEDpins[i], LEDstates[i]);
+    }
   }
 }
