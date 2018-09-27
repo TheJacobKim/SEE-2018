@@ -27,6 +27,8 @@
  * Return Value: soundByte
  */
 int checkPotentiometer(int minVal, int maxVal) {
+  minVal = map(minVal,minLowerBound,minUpperBound,0,1024);
+  maxVal = map(maxVal,maxLowerBound,maxUpperBound,0,1024);
   int soundByte = 0;
 
   if (minVal < maxVal) {

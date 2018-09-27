@@ -22,15 +22,15 @@ void playSound(int soundByte) {
    *  This is the default gain for every track until changed. A value of -70 is completely muted. 
    */
   for ( int i = 1; i <= 5; i++ ) {
-    if ((soundByte & i) == i )    wTrig.trackGain(i, 0);
+    if ((soundByte & i) == i )    wTrig.trackGain(i, MAXVOLUME);
     else                          wTrig.trackGain(i, -70);
   }
 
   // If a specific section is selected, mute background noises
   if (soundByte == 0 || soundByte == 1 || soundByte == 2 || soundByte == 4 || soundByte == 8 || soundByte == 16) {
-    wTrig.trackGain(5, 0);
-    wTrig.trackGain(6, 0);
-    wTrig.trackGain(7, 0);
+    wTrig.trackGain(5, MAXVOLUME);
+    wTrig.trackGain(6, MAXVOLUME);
+    wTrig.trackGain(7, MAXVOLUME);
   } else {
     wTrig.trackGain(5, -70);
     wTrig.trackGain(6, -70);

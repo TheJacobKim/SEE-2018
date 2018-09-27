@@ -9,20 +9,29 @@
 #include <FastLED.h>
 
 // LED strip
-#define NUM_LEDS 40
-#define LEDSTRIP_PIN 8
+#define NUM_LEDS 60
+#define LEDSTRIP_PIN 4
 CRGB leds[NUM_LEDS];
 
 // Potentiometers
-#define MAX A0
-#define MIN A1
+#define MAX A1
+#define MIN A0
+
+//Volume
+#define MAXVOLUME -50
+//-70 is full mute, +10 is max gain
+//adjust accordingly
 
 // Our WAV Trigger object
 wavTrigger wTrig;
 
 // Pin nums
-int buttonPins[] = {2, 3, 18, 19, 20};
-int LEDpins[] = {44, 46, 48, 50, 52};
+//int buttonPins[] = {2, 3, 18, 19, 20};
+//int LEDpins[] = {44, 46, 48, 50, 52};
+int buttonPins[] = {19, 20, 18, 3, 2};
+int LEDpins[] = {46, 48, 50, 52, 44};
+const int calibrationPin = A2;
+
 
 boolean LEDon = true;
 
@@ -33,7 +42,7 @@ volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 // Keeps track of which button is selected
 int buttonNum = -1;
 int lastButtonNum = buttonNum;
-long debounceDelay = 15;            //Debouncing Time in Milliseconds
+//long debounceDelay = 15;            //Debouncing Time in Milliseconds
 volatile unsigned long lastDebounceTime;
 int buttonFlag = -1;
 
@@ -43,10 +52,17 @@ long idleTime = 120000;  // Two minutes in milliseconds
 boolean idle = false;
 
 // Potentiometer reading
+int minLowerBound = 0;
+int minUpperBound = 1023;
+int maxLowerBound = 0;
+int maxUpperBound = 1023;
 volatile int minReading;
 volatile int maxReading;
 volatile int lastMaxReading;
 volatile int lastMinReading;
+volatile boolean calButtonFlag = false;
+//long lastTime = millis();
+static const int debounceDelay = 500;
 
 /*
    Function Name: setup()
@@ -97,8 +113,31 @@ void setup() {
   for (int i = 0; i < 5; i++) {
     pinMode(buttonPins[i], INPUT_PULLUP);
     pinMode(LEDpins[i], OUTPUT);
+    digitalWrite(LEDpins[i],LOW);
   }
-
+  pinMode(calibrationPin, INPUT_PULLUP);
+  if ((digitalRead(calibrationPin))) {
+    minLowerBound = 103;
+    minUpperBound = 704;
+    maxLowerBound = 101;
+    maxUpperBound = 707;
+  }
+  else {
+    attachInterrupt(digitalPinToInterrupt(buttonPins[0]), calButtonPressed, FALLING);
+    minLowerBound = calibratePots(1);
+    minUpperBound = calibratePots(2);
+    maxLowerBound = calibratePots(3);
+    maxUpperBound = calibratePots(4);
+    detachInterrupt(digitalPinToInterrupt(buttonPins[0]));
+  }
+  Serial.print("MIN Lower: ");
+  Serial.println(minLowerBound);
+  Serial.print("MIN Upper: ");
+  Serial.println(minUpperBound);
+  Serial.print("MAX Lower: ");
+  Serial.println(maxLowerBound);
+  Serial.print("MAX Upper: ");
+  Serial.println(maxUpperBound);
   // Button interrupt
   attachInterrupt(digitalPinToInterrupt(buttonPins[0]), button0Pressed, FALLING);
   attachInterrupt(digitalPinToInterrupt(buttonPins[1]), button1Pressed, FALLING);
@@ -107,7 +146,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(buttonPins[4]), button4Pressed, FALLING);
 
 
-  digitalWrite(LEDpins[0], HIGH);
+  //digitalWrite(LEDpins[0], HIGH);
   FastLED.addLeds<NEOPIXEL, LEDSTRIP_PIN>(leds, NUM_LEDS);
 }
 
@@ -122,7 +161,11 @@ void setup() {
 */
 void loop() {
   // Which sounds to play
+  analogRead(MIN);
+  delay(1);
   minReading = analogRead(MIN);
+  analogRead(MAX);
+  delay(1);
   maxReading = analogRead(MAX);
   int soundByte = checkPotentiometer(minReading, maxReading); //CHANGE THIS ONCE YOU HAVE THE SECOND POT
 
@@ -130,42 +173,53 @@ void loop() {
   wTrig.update();
 
   switch (buttonFlag) {
+
     case 0:
-      Serial.println("button 0 pushed");
+      Serial.println("button 1 pushed");
       lightLED(0);
+      lastButtonNum = buttonNum;
+      buttonNum = buttonFlag;
       buttonFlag = -1;
       break;
     case 1:
-      Serial.println("button 1 pushed");
+      Serial.println("button 2 pushed");
       lightLED(1);
+      lastButtonNum = buttonNum;
+      buttonNum = buttonFlag;
       buttonFlag = -1;
       break;
     case 2:
-      Serial.println("button 2 pushed");
+      Serial.println("button 3 pushed");
       lightLED(2);
+      lastButtonNum = buttonNum;
+      buttonNum = buttonFlag;
       buttonFlag = -1;
       break;
     case 3:
-      Serial.println("button 3 pushed");
+      Serial.println("button 4 pushed");
       lightLED(3);
+      lastButtonNum = buttonNum;
+      buttonNum = buttonFlag;
       buttonFlag = -1;
       break;
     case 4:
-      Serial.println("button 4 pushed");
+      Serial.println("button 5 pushed");
       lightLED(4);
+      lastButtonNum = buttonNum;
+      buttonNum = buttonFlag;
       buttonFlag = -1;
       break;
   }
 
   // Play sounds accordingly
   playSound(soundByte);
-/*  Serial.print("soundByte: ");
-  Serial.println(soundByte);
-  Serial.print("buttonNum: ");
-  Serial.println(buttonNum);
-*/
+  /*  Serial.print("soundByte: ");
+    Serial.println(soundByte);
+    Serial.print("buttonNum: ");
+    Serial.println(buttonNum);
+  */
   // Check result and turn led strip green or red
   checkResult(soundByte);
 
-  //checkIdle();
+  checkIdle();
 }

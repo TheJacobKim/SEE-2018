@@ -20,7 +20,7 @@ void button0Pressed() {
   //software debounce
   static unsigned long last_time0 = 0;
   unsigned long this_time = millis();
-  if (this_time - last_time0 > 100) {
+  if (this_time - last_time0 > debounceDelay) {
     buttonFlag = 0;
   }
   last_time0 = this_time;
@@ -29,7 +29,7 @@ void button1Pressed() {
   //software debounce
   static unsigned long last_time1 = 0;
   unsigned long this_time = millis();
-  if (this_time - last_time1 > 100) {
+  if (this_time - last_time1 > debounceDelay) {
     buttonFlag = 1;
   }
   last_time1 = this_time;
@@ -38,7 +38,7 @@ void button2Pressed() {
   //software debounce
   static unsigned long last_time2 = 0;
   unsigned long this_time = millis();
-  if (this_time - last_time2 > 100) {
+  if (this_time - last_time2 > debounceDelay) {
     buttonFlag = 2;
   }
   last_time2 = this_time;
@@ -47,7 +47,7 @@ void button3Pressed() {
   //software debounce
   static unsigned long last_time3 = 0;
   unsigned long this_time = millis();
-  if (this_time - last_time3 > 100) {
+  if (this_time - last_time3 > debounceDelay) {
     buttonFlag = 3;
   }
   last_time3 = this_time;
@@ -56,7 +56,7 @@ void button4Pressed() {
   //software debounce
   static unsigned long last_time4 = 0;
   unsigned long this_time = millis();
-  if (this_time - last_time4 > 100) {
+  if (this_time - last_time4 > debounceDelay) {
     buttonFlag = 4;
   }
   last_time4 = this_time;
@@ -73,19 +73,19 @@ void button4Pressed() {
 void lightLED(int ledPin) {
   if (idle) {
     for (int i = 0; i < 5; i++) {
-      digitalWrite(LEDpins[i], LOW);
+      digitalWrite(LEDpins[i], HIGH);
       delay(1);
     }
   } 
   
   else {
     Serial.print("LIGHT UP ");
-    Serial.println(ledPin);
+    Serial.println(ledPin+1);
 
     for (int n = 0; n < 5; n++) {
-      LEDstates[n] = LOW;
+      LEDstates[n] = HIGH;
     }
-    LEDstates[ledPin] = HIGH;
+    LEDstates[ledPin] = LOW;
 
     for (int i = 0; i < 5; i++) {
       digitalWrite(LEDpins[i], LEDstates[i]);
