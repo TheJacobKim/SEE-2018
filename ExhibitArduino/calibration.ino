@@ -7,14 +7,13 @@
 
 
 /*
-   Function Name: button#Pressed()
-   Function Prototype: void button#Pressed();
-   Description: This function is part of interrupts() in Arduino.
-                If any buttons' state change, this function gets called.
+   Function Name: calibratePots()
+   Function Prototype: int calibratePots(int potIdentity);
+   Description: This function calibrates potentiometer.
    Parameters: None
    Side Effects: None
    Error Conditions: None
-   Return Value: None
+   Return Value: potReading
 */
 
 int calibratePots(int potIdentity) {

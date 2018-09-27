@@ -23,9 +23,9 @@ void checkIdle() {
     lastMaxReading = maxReading;
     lastMinReading = minReading;
     if (idle == true) {
-      int myRand = random(0,5);
+      int myRand = random(0, 5);
       buttonNum = myRand;
-      //buttonNum = pow(2, myRand);
+      buttonNum = pow(2, myRand);
       lightLED(myRand);
     }
     idle = false;

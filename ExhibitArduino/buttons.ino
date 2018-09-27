@@ -76,11 +76,11 @@ void lightLED(int ledPin) {
       digitalWrite(LEDpins[i], HIGH);
       delay(1);
     }
-  } 
-  
+  }
+
   else {
     Serial.print("LIGHT UP ");
-    Serial.println(ledPin+1);
+    Serial.println(ledPin + 1);
 
     for (int n = 0; n < 5; n++) {
       LEDstates[n] = HIGH;

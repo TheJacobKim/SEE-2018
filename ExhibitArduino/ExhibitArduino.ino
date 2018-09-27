@@ -26,8 +26,7 @@ CRGB leds[NUM_LEDS];
 wavTrigger wTrig;
 
 // Pin nums
-//int buttonPins[] = {2, 3, 18, 19, 20};
-//int LEDpins[] = {44, 46, 48, 50, 52};
+
 int buttonPins[] = {19, 20, 18, 3, 2};
 int LEDpins[] = {46, 48, 50, 52, 44};
 const int calibrationPin = A2;
@@ -61,7 +60,6 @@ volatile int maxReading;
 volatile int lastMaxReading;
 volatile int lastMinReading;
 volatile boolean calButtonFlag = false;
-//long lastTime = millis();
 static const int debounceDelay = 500;
 
 /*
@@ -113,7 +111,7 @@ void setup() {
   for (int i = 0; i < 5; i++) {
     pinMode(buttonPins[i], INPUT_PULLUP);
     pinMode(LEDpins[i], OUTPUT);
-    digitalWrite(LEDpins[i],LOW);
+    digitalWrite(LEDpins[i], LOW);
   }
   pinMode(calibrationPin, INPUT_PULLUP);
   if ((digitalRead(calibrationPin))) {
@@ -178,35 +176,35 @@ void loop() {
       Serial.println("button 1 pushed");
       lightLED(0);
       lastButtonNum = buttonNum;
-      buttonNum = buttonFlag;
+      buttonNum = pow(2, buttonFlag);
       buttonFlag = -1;
       break;
     case 1:
       Serial.println("button 2 pushed");
       lightLED(1);
       lastButtonNum = buttonNum;
-      buttonNum = buttonFlag;
+      buttonNum = pow(2, buttonFlag);
       buttonFlag = -1;
       break;
     case 2:
       Serial.println("button 3 pushed");
       lightLED(2);
       lastButtonNum = buttonNum;
-      buttonNum = buttonFlag;
+      buttonNum = pow(2, buttonFlag);
       buttonFlag = -1;
       break;
     case 3:
       Serial.println("button 4 pushed");
       lightLED(3);
       lastButtonNum = buttonNum;
-      buttonNum = buttonFlag;
+      buttonNum = pow(2, buttonFlag);
       buttonFlag = -1;
       break;
     case 4:
       Serial.println("button 5 pushed");
       lightLED(4);
       lastButtonNum = buttonNum;
-      buttonNum = buttonFlag;
+      buttonNum = pow(2, buttonFlag);
       buttonFlag = -1;
       break;
   }
