@@ -1,19 +1,12 @@
-# SEE-2018
-All the codes for SEE-2018
+# SEE-2018, Find Animal Sounds in a Noisy Kelp Forest Exhibit
 
-ExhibitArduino: contains the code base
 
-FinalSounds: Sound files formatted to 16-bit, 44kHz
-
-libraies: Libraries used for Arduino
-
-# SEE-2018, Interactive Wave Exhibit
-
-One Paragraph of project description goes here
+This is exhibit was built by Summer Experience at EnVision 2018 interns.
+It is currently a property of Birch Aquarium, more description will be added later.
 
 ## Getting Started
 
-You can for this repository or download the .zip file.
+You can fork this repository or download the .zip file.
 
 ### Prerequisites
 
@@ -45,39 +38,15 @@ Finished Setup
 ```
 it means the Arduino and WAVTrigger is all set.
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+Upload this code to the Arduino with WAV Trigger.
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [WAV Trigger](https://github.com/robertsonics/WAV-Trigger-Arduino-Serial-Library) - The WAV Trigger library
+* [FastLED](http://fastled.io/) - Library for LED strip.
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
 
@@ -87,5 +56,4 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Product links
 
-* https://www.sparkfun.com/products/13660
-* https://www.sparkfun.com/products/11061
+* TODO
