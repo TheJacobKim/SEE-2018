@@ -12,20 +12,19 @@
 
 void checkIdle() {
   if ( abs(lastMaxReading - maxReading) < 5 && abs(lastMinReading - minReading) < 5 &&
-       (lastButtonNum == buttonNum) ) {
+       (lastbuttonNumPow == buttonNumPow) ) {
     if ( millis() - lastTime > idleTime ) {
       Serial.println("Now Idle");
       idle = true;
     }
   } else {
     lastTime = millis();
-    lastButtonNum = buttonNum;
+    lastbuttonNumPow = buttonNumPow;
     lastMaxReading = maxReading;
     lastMinReading = minReading;
     if (idle == true) {
       int myRand = random(0, 5);
-      buttonNum = myRand;
-      buttonNum = pow(2, myRand);
+      buttonNumPow = pow(2, myRand);
       lightLED(myRand);
     }
     idle = false;

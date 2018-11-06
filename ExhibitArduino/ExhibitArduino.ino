@@ -18,7 +18,8 @@ CRGB leds[NUM_LEDS];
 #define MIN A0
 
 //Volume
-#define MAXVOLUME -50
+#define MAXVOLUMEBG 0
+#define MAXVOLUMEFISH 0
 //-70 is full mute, +10 is max gain
 //adjust accordingly
 
@@ -39,8 +40,8 @@ volatile byte buttonStates[] = {LOW, LOW, LOW, LOW, LOW};
 volatile byte LEDstates[] = {LOW, LOW, LOW, LOW, LOW};
 
 // Keeps track of which button is selected
-int buttonNum = -1;
-int lastButtonNum = buttonNum;
+int buttonNumPow = -1;
+int lastbuttonNumPow = buttonNumPow;
 //long debounceDelay = 15;            //Debouncing Time in Milliseconds
 volatile unsigned long lastDebounceTime;
 int buttonFlag = -1;
@@ -165,6 +166,12 @@ void loop() {
   analogRead(MAX);
   delay(1);
   maxReading = analogRead(MAX);
+  
+//  Serial.print("MIN: ");
+//  Serial.println(minReading);
+//  Serial.print("MAX: ");
+//  Serial.println(maxReading);
+
   int soundByte = checkPotentiometer(minReading, maxReading); //CHANGE THIS ONCE YOU HAVE THE SECOND POT
 
   // Call update on the WAV Trigger to keep the track playing status current.
@@ -175,49 +182,47 @@ void loop() {
     case 0:
       Serial.println("button 1 pushed");
       lightLED(0);
-      lastButtonNum = buttonNum;
-      buttonNum = pow(2, buttonFlag);
+      lastbuttonNumPow = buttonNumPow;
+      buttonNumPow = (int)ceil(pow(2, buttonFlag));
       buttonFlag = -1;
       break;
     case 1:
       Serial.println("button 2 pushed");
       lightLED(1);
-      lastButtonNum = buttonNum;
-      buttonNum = pow(2, buttonFlag);
+      lastbuttonNumPow = buttonNumPow;
+      buttonNumPow = (int) ceil(pow(2, buttonFlag));
       buttonFlag = -1;
       break;
     case 2:
       Serial.println("button 3 pushed");
       lightLED(2);
-      lastButtonNum = buttonNum;
-      buttonNum = pow(2, buttonFlag);
+      lastbuttonNumPow = buttonNumPow;
+      buttonNumPow = (int) ceil(pow(2, buttonFlag));
       buttonFlag = -1;
       break;
     case 3:
       Serial.println("button 4 pushed");
       lightLED(3);
-      lastButtonNum = buttonNum;
-      buttonNum = pow(2, buttonFlag);
+      lastbuttonNumPow = buttonNumPow;
+      buttonNumPow = (int) ceil(pow(2, buttonFlag));
       buttonFlag = -1;
       break;
     case 4:
       Serial.println("button 5 pushed");
       lightLED(4);
-      lastButtonNum = buttonNum;
-      buttonNum = pow(2, buttonFlag);
+      lastbuttonNumPow = buttonNumPow;
+      buttonNumPow = (int) ceil(pow(2, buttonFlag));
       buttonFlag = -1;
       break;
   }
-
+  
   // Play sounds accordingly
   playSound(soundByte);
-  /*  Serial.print("soundByte: ");
-    Serial.println(soundByte);
-    Serial.print("buttonNum: ");
-    Serial.println(buttonNum);
-  */
+
   // Check result and turn led strip green or red
   checkResult(soundByte);
 
   checkIdle();
+
+  delay(2);
 }
