@@ -24,6 +24,8 @@ void button0Pressed() {
     buttonFlag = 0;
   }
   last_time0 = this_time;
+  idle = false;
+  lastTime = millis();
 }
 void button1Pressed() {
   //software debounce
@@ -33,6 +35,8 @@ void button1Pressed() {
     buttonFlag = 1;
   }
   last_time1 = this_time;
+  idle = false;
+  lastTime = millis();
 }
 void button2Pressed() {
   //software debounce
@@ -42,6 +46,8 @@ void button2Pressed() {
     buttonFlag = 2;
   }
   last_time2 = this_time;
+  idle = false;
+  lastTime = millis();
 }
 void button3Pressed() {
   //software debounce
@@ -51,6 +57,8 @@ void button3Pressed() {
     buttonFlag = 3;
   }
   last_time3 = this_time;
+  idle = false;
+  lastTime = millis();
 }
 void button4Pressed() {
   //software debounce
@@ -60,6 +68,8 @@ void button4Pressed() {
     buttonFlag = 4;
   }
   last_time4 = this_time;
+  idle = false;
+  lastTime = millis();
 }
 
 /*
@@ -71,25 +81,16 @@ void button4Pressed() {
    Return Value: None
 */
 void lightLED(int ledPin) {
-  if (idle) {
-    for (int i = 0; i < 5; i++) {
-      digitalWrite(LEDpins[i], HIGH);
-      delay(1);
-    }
+  Serial.print("LIGHT UP ");
+  Serial.println(ledPin + 1);
+
+  for (int n = 0; n < 5; n++) {
+    LEDstates[n] = HIGH;
   }
+  LEDstates[ledPin] = LOW;
 
-  else {
-    Serial.print("LIGHT UP ");
-    Serial.println(ledPin + 1);
-
-    for (int n = 0; n < 5; n++) {
-      LEDstates[n] = HIGH;
-    }
-    LEDstates[ledPin] = LOW;
-
-    for (int i = 0; i < 5; i++) {
-      digitalWrite(LEDpins[i], LEDstates[i]);
-      delay(1);
-    }
+  for (int i = 0; i < 5; i++) {
+    digitalWrite(LEDpins[i], LEDstates[i]);
+    delay(1);
   }
 }

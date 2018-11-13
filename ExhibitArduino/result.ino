@@ -9,39 +9,42 @@
 */
 
 void checkResult(int soundByte) {
-  
-  Serial.print("buttonNumPow: ");
-  Serial.println(buttonNumPow);
 
+  // If idle turn off the LED
   if (idle) {
-    Serial.println("LED Off");
-    for ( int i = 0; i < NUM_LEDS; i++ ) {
-      leds[i] = CRGB::Black;
+    if ( LEDon ) {
+      Serial.println("LED Off");
+      for ( int i = 0; i < NUM_LEDS; i++ ) {
+        leds[i] = CRGB::Black;
+      }
+      LEDon = false;
     }
-    FastLED.show();
-    LEDon = false;
   }
-  
+
+  // If not idle turn on the LED accordingly
   else {
+    // User narrowed down the frequency.
     if (soundByte == buttonNumPow) {
-      if (!LEDon) {
+      if ( !LEDon || LEDRed ) {
         Serial.println("LED to Green");
-        for ( int i = 0; i < NUM_LEDS; i++ ) {
+        for ( int i = 0; i < NUM_LEDS; i++ )
           leds[i] = CRGB::Green;
-        }
-        FastLED.show();
-        delay(500);
         LEDon = true;
+        LEDRed = false;
       }
-    } else {
-      if (LEDon) {
-        Serial.print("LED to Red");
-        for ( int i = 0; i < NUM_LEDS; i++ ) {
+      delay(500);
+    }
+
+    // User didn't narrow down frequency
+    else {
+      if (!LEDon || !LEDRed ) {
+        Serial.println("LED to Red");
+        for ( int i = 0; i < NUM_LEDS; i++ )
           leds[i] = CRGB::Red;
-        }
-        FastLED.show();
-        LEDon = false;
+        LEDon = true;
+        LEDRed = true;
       }
     }
   }
+  FastLED.show();
 }

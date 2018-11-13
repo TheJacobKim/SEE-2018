@@ -27,11 +27,11 @@
    Return Value: soundByte
 */
 int checkPotentiometer(int minVal, int maxVal) {
-  Serial.println("----PRE MAP-----");
+  /*Serial.println("----PRE MAP-----");
   Serial.print("MIN POT: ");
   Serial.println(minVal);
   Serial.print("MAX POT: ");
-  Serial.println(maxVal);
+  Serial.println(maxVal);*/
   minVal = map(minVal, minLowerBound, minUpperBound, 0, 1024);
   maxVal = map(maxVal, maxLowerBound, maxUpperBound, 0, 1024);
   int localSoundByte = 0;
@@ -49,10 +49,11 @@ int checkPotentiometer(int minVal, int maxVal) {
     if (maxVal > 816)
       localSoundByte += 16;
   }
+  /*
   Serial.println("----Post MAP-----");
   Serial.print("MIN POT: ");
   Serial.println(minVal);
   Serial.print("MAX POT: ");
-  Serial.println(maxVal);
+  Serial.println(maxVal);*/
   return localSoundByte;
 }

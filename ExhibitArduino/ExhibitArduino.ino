@@ -34,6 +34,7 @@ const int calibrationPin = A2;
 
 
 boolean LEDon = true;
+boolean LEDRed = false;
 
 // variable for reading the pushbutton & LED status
 volatile byte buttonStates[] = {LOW, LOW, LOW, LOW, LOW};
@@ -48,7 +49,7 @@ int buttonFlag = -1;
 
 // Calculate idle time
 long lastTime = millis();
-long idleTime = 120000;  // Two minutes in milliseconds
+long idleTime = 600000;  // Two minutes in milliseconds
 boolean idle = false;
 
 // Potentiometer reading
@@ -166,19 +167,21 @@ void loop() {
   analogRead(MAX);
   delay(1);
   maxReading = analogRead(MAX);
-  
-//  Serial.print("MIN: ");
-//  Serial.println(minReading);
-//  Serial.print("MAX: ");
-//  Serial.println(maxReading);
 
-  int soundByte = checkPotentiometer(minReading, maxReading); //CHANGE THIS ONCE YOU HAVE THE SECOND POT
+  /*Serial.print("MIN: ");
+  Serial.println(minReading);
+  Serial.print("MAX: ");
+  Serial.println(maxReading);
+  */
+  int soundByte = checkPotentiometer(minReading, maxReading); // CHANGE THIS ONCE YOU HAVE THE SECOND POT
 
   // Call update on the WAV Trigger to keep the track playing status current.
   wTrig.update();
 
-  switch (buttonFlag) {
+  // Check for idle
+  checkIdle();
 
+  switch (buttonFlag) {
     case 0:
       Serial.println("button 1 pushed");
       lightLED(0);
@@ -215,14 +218,14 @@ void loop() {
       buttonFlag = -1;
       break;
   }
-  
+
   // Play sounds accordingly
   playSound(soundByte);
 
   // Check result and turn led strip green or red
   checkResult(soundByte);
 
-  checkIdle();
 
-  delay(2);
+
+  delay(1);
 }

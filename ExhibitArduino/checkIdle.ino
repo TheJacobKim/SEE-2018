@@ -11,22 +11,23 @@
 */
 
 void checkIdle() {
-  if ( abs(lastMaxReading - maxReading) < 5 && abs(lastMinReading - minReading) < 5 &&
-       (lastbuttonNumPow == buttonNumPow) ) {
+  /*
+     If both both potentiometer and buttons were not touched for
+     certain amount of time, it is idle
+  */
+  if ( abs(lastMaxReading - maxReading) < 10 && abs(lastMinReading - minReading) < 10 ) {
     if ( millis() - lastTime > idleTime ) {
-      Serial.println("Now Idle");
+      Serial.println("Idle");
       idle = true;
     }
-  } else {
+  }
+
+  else {
+    Serial.println("Not Idle");
     lastTime = millis();
     lastbuttonNumPow = buttonNumPow;
     lastMaxReading = maxReading;
     lastMinReading = minReading;
-    if (idle == true) {
-      int myRand = random(0, 5);
-      buttonNumPow = pow(2, myRand);
-      lightLED(myRand);
-    }
     idle = false;
   }
 }
