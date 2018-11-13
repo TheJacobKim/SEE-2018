@@ -50,7 +50,7 @@ Upload this code to the Arduino with WAV Trigger.
 
 ## Authors
 
-* **Hyunjun Kim** - *Initial work* - [PurpleBooth](https://thejacobkim.github.io/)
+* **Hyunjun Kim** - *Initial work* - [Portfolio Page](https://thejacobkim.github.io/)
 * **Gabi Schaffzin** - *Bug fixes and code refactoring*
 * **Jesse Dewald** - *Bug fixes and code refactoring*
 
